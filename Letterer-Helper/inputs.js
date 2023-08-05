@@ -25,14 +25,11 @@ function setupBindingDirection() {
   bindingDirections.forEach((ele) => ele.onclick = handleClickBindingDirection);
 }
 
-function setupAdjustSizeAndLeading(){
-  document.querySelector("#adjust-size-and-leading .increase").onclick = scripts.adjustSizeAndLeading.increase;
-  document.querySelector("#adjust-size-and-leading .decrease").onclick = scripts.adjustSizeAndLeading.decrease;
-}
-
 function main(){
   setupBindingDirection();
-  setupAdjustSizeAndLeading();
+  document.querySelector("#adjust-size-and-leading .increase").onclick = scripts.adjustSizeAndLeading.increase;
+  document.querySelector("#adjust-size-and-leading .decrease").onclick = scripts.adjustSizeAndLeading.decrease;
+  document.getElementById("refit-overset-frames").onclick = scripts.refitOversetFrames;
 }
 
 main();

@@ -8,6 +8,7 @@
   <script src="inputs.js"></script>
   <script src="constants.js" type="module"></script>
   <script src="scripts.js" type="module"></script>
+  <script src="./Manga-Scripts/progress_bar.js" type="module"></script>
 </head>
 
 <body>
@@ -35,6 +36,13 @@
         <div class="input button_group">
           <button class="increase">Increase</button>
           <button class="decrease">Decrease</button>
+        </div>
+      </div>
+      <div>
+        <h5>Actions</h5>
+        <div class="input">
+          <button id="refit-overset-frames">Refit Overset Frames</button>
+          <span class="info-icon" title="Refits all of the overflowing frames on either the current page or all pages. InDesign's 'Fit Frame to Content' function doesn't work well, so this script nudges all the edges out pixel by pixel until the text is no longer overset.">ⓘ</span>
         </div>
       </div>
     </section>
