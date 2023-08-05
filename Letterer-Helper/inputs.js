@@ -13,6 +13,7 @@ function handleClickBindingDirection(e) {
 }
 
 function setupBindingDirection() {
+  if (!app.activeDocument) { return }
   const bindingDirections = document.querySelectorAll('#binding_direction input');
   const currentBinding = app.activeDocument.documentPreferences.pageBinding;
 

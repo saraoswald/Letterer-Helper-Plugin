@@ -1,0 +1,43 @@
+:root {
+  --dark-blue: rgb(32, 32, 110);
+  font-size: 12px;
+}
+.body {
+  background: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  flex-direction: column;
+  display: flex;
+  padding: 12px;
+}
+.grouped_radio input,
+.grouped_radio label,
+.info-icon,
+button {
+  cursor: pointer;
+}
+
+.button_group {
+  display: flex;
+
+}
+button {
+  padding: 0.5em;
+}
+
+section > div {
+  border: 1px solid var(--dark-blue);
+  border-radius: 3px;
+  padding: 0.5em 1em;
+  margin-bottom: 0.5em;
+}
+
+section .input {
+  display: flex;
+  align-items: center;
+}
