@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="index.js"></script>
+  <script src="inputs.js"></script>
+  <script src="constants.js" type="module"></script>
+  <script src="scripts.js" type="module"></script>
+</head>
+<style>
+  :root {
+    --dark-blue: rgb(32, 32, 110);
+  }
+  .body {
+    background: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    flex-direction: column;
+    display: flex;
+    padding: 12px;
+  }
+  .grouped_radio input,
+  .grouped_radio label,
+  .info-icon,
+  button {
+    cursor: pointer;
+  }
+  section > div {
+    border: 1px solid var(--dark-blue);
+    border-radius: 3px;
+    padding: 0.5em 1em;
+  }
+</style>
+
+<body>
+  <div class="body">
+    <section>
+      <h3>Document Settings</h3>
+      <div>
+        <h5>Binding Direction</h5>
+        <div class="grouped_radio" id="binding_direction">
+          <label for="binding_direction_ltr">
+            <input type="radio" id="binding_direction_LEFT_TO_RIGHT" name="binding_direction" value="LEFT_TO_RIGHT">
+            Left to Right
+          </label>
+          <label for="binding_direction_rtl">
+            <input type="radio" id="binding_direction_RIGHT_TO_LEFT" name="binding_direction" value="RIGHT_TO_LEFT">
+            Right to Left
+          </label>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h3>Text Frame Manipulation</h3>
+      <div id="adjust-size-and-leading">
+        <h5>Adjust Size and Leading <span class="info-icon" title="Adjusts both the selected text's size and leading at the same time by the same point amount.">ⓘ</span></h5>
+        <div class="button_group">
+          <button class="increase">Increase</button>
+          <button class="decrease">Decrease</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
