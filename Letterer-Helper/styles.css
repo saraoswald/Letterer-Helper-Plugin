@@ -1,5 +1,8 @@
 :root {
   --dark-blue: rgb(32, 32, 110);
+  --dark-gray: rgb(60, 60, 60);
+  --light-gray: rgb(219, 219, 219);
+  --light-green: rgb(102, 210, 113);
   font-size: 12px;
 }
 .body {
@@ -29,6 +32,48 @@ button {
 button {
   padding: 0.5em;
 }
+
+.hidden { display: none; }
+
+#progress_bar {
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(60, 60, 60, 0.5);
+  z-index: 100;
+}
+#progress_bar > div {
+  width: 60%;
+  height: 1.5em;
+  border-radius: 0.75em;
+  background: white;
+  border: 2px solid white;
+  top: calc(50% - 1.5em);
+  left: 20%;
+  position: fixed;
+  z-index: 101;
+  overflow: hidden;
+}
+#progress_bar div:after {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 1em;
+  background: var(--light-green);
+  border-radius: 7px;
+}
+#progress_bar.w-10 div:after { width: 10%; }
+#progress_bar.w-20 div:after { width: 20%; }
+#progress_bar.w-30 div:after { width: 30%; }
+#progress_bar.w-40 div:after { width: 40%; }
+#progress_bar.w-50 div:after { width: 50%; }
+#progress_bar.w-60 div:after { width: 60%; }
+#progress_bar.w-70 div:after { width: 70%; }
+#progress_bar.w-80 div:after { width: 80%; }
+#progress_bar.w-90 div:after { width: 90%; }
+#progress_bar.w-100 div:after { width: 100%; }
 
 section > div {
   border: 1px solid var(--dark-blue);
