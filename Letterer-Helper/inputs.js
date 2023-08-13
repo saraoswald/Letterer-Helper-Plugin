@@ -14,7 +14,6 @@ function handleClickBindingDirection(e) {
 
 function setupBindingDirection() {
   if (!app.activeDocument) { return }
-  const bindingDirections = document.querySelectorAll('#binding_direction input');
   const currentBinding = app.activeDocument.documentPreferences.pageBinding;
 
   // Not sure when this is used, but it's possible
@@ -22,14 +21,28 @@ function setupBindingDirection() {
     currentBinding = ID.PageBindingOptions.LEFT_TO_RIGHT;
 
   document.getElementById(`binding_direction_${currentBinding}`).checked = true;
+}
+
+function setupFields(){
+  setupBindingDirection();
+}
+
+function setupClickBindings(){
+  const bindingDirections = document.querySelectorAll('#binding_direction input');
   bindingDirections.forEach((ele) => ele.onclick = handleClickBindingDirection);
+
+  document.querySelector("#adjust-size-and-leading .increase").onclick = scripts.adjustSizeAndLeading.increase;
+  document.querySelector("#adjust-size-and-leading .decrease").onclick = scripts.adjustSizeAndLeading.decrease;
+  document.querySelector("#skew-frame .left").onclick  = scripts.skewFrame.left;
+  document.querySelector("#skew-frame .right").onclick = scripts.skewFrame.right;
+  document.getElementById("refit-overset-frames").onclick = scripts.refitOversetFrames;
 }
 
 function main(){
-  setupBindingDirection();
-  document.querySelector("#adjust-size-and-leading .increase").onclick = scripts.adjustSizeAndLeading.increase;
-  document.querySelector("#adjust-size-and-leading .decrease").onclick = scripts.adjustSizeAndLeading.decrease;
-  document.getElementById("refit-overset-frames").onclick = scripts.refitOversetFrames;
+  if (!app.activeDocument) { return }
+
+  setupFields();
+  setupClickBindings();
 }
 
 main();

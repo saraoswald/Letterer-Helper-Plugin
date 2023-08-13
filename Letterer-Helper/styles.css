@@ -64,15 +64,25 @@ button {
   background: var(--light-green);
   border-radius: 7px;
 }
+#progress_bar.w-5 div:after { width: 5%; }
 #progress_bar.w-10 div:after { width: 10%; }
+#progress_bar.w-15 div:after { width: 15%; }
 #progress_bar.w-20 div:after { width: 20%; }
+#progress_bar.w-25 div:after { width: 25%; }
 #progress_bar.w-30 div:after { width: 30%; }
+#progress_bar.w-35 div:after { width: 35%; }
 #progress_bar.w-40 div:after { width: 40%; }
+#progress_bar.w-45 div:after { width: 45%; }
 #progress_bar.w-50 div:after { width: 50%; }
+#progress_bar.w-55 div:after { width: 55%; }
 #progress_bar.w-60 div:after { width: 60%; }
+#progress_bar.w-65 div:after { width: 65%; }
 #progress_bar.w-70 div:after { width: 70%; }
+#progress_bar.w-75 div:after { width: 75%; }
 #progress_bar.w-80 div:after { width: 80%; }
+#progress_bar.w-85 div:after { width: 85%; }
 #progress_bar.w-90 div:after { width: 90%; }
+#progress_bar.w-95 div:after { width: 95%; }
 #progress_bar.w-100 div:after { width: 100%; }
 
 section > div {
