@@ -36,6 +36,8 @@ function setupClickBindings(){
   document.querySelector("#skew-frame .left").onclick  = scripts.skewFrame.left;
   document.querySelector("#skew-frame .right").onclick = scripts.skewFrame.right;
   document.getElementById("refit-overset-frames").onclick = scripts.refitOversetFrames;
+  document.getElementById("scale-pages").onclick = scripts.scalePages;
+  document.getElementById("position-art").onclick = scripts.positionArt;
 }
 
 function main(){
