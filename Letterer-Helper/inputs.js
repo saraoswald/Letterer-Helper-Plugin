@@ -38,6 +38,8 @@ function setupClickBindings(){
   document.getElementById("refit-overset-frames").onclick = scripts.refitOversetFrames;
   document.getElementById("scale-pages").onclick = scripts.scalePages;
   document.getElementById("position-art").onclick = scripts.positionArt;
+  document.getElementById("manga-em-dash").onclick = scripts.mangaEmDash;
+  document.getElementById("pseudo-stroke").onclick = scripts.pseudoStroke;
 }
 
 function main(){
