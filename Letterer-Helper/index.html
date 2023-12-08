@@ -16,60 +16,41 @@
       <div></div>
     </div>
     <section>
-      <h3>Document Settings</h3>
-      <div>
-        <h5>Binding Direction</h5>
-        <div class="grouped_radio" id="binding_direction">
-          <label for="binding_direction_ltr">
-            <input type="radio" id="binding_direction_LEFT_TO_RIGHT" name="binding_direction" value="LEFT_TO_RIGHT">
-            Left to Right
-          </label>
-          <label for="binding_direction_rtl">
-            <input type="radio" id="binding_direction_RIGHT_TO_LEFT" name="binding_direction" value="RIGHT_TO_LEFT">
-            Right to Left
-          </label>
-        </div>
-      </div>
+      <sp-heading size="XS">Document Settings</sp-heading>
+      <sp-body size="S">
+        <sp-radio-group id="binding_direction">
+            <sp-label slot="label">BINDING DIRECTION</sp-label>
+            <sp-radio class="LEFT_TO_RIGHT" value="LEFT_TO_RIGHT">Left to Right</sp-radio>
+            <sp-radio class="RIGHT_TO_LEFT" value="RIGHT_TO_LEFT">Right to Left</sp-radio>
+        </sp-radio-group>
+      </sp-body>
     </section>
+    <sp-divider></sp-divider>
     <section>
-      <h3>Text Frame Manipulation</h3>
-      <div id="skew-frame">
-        <h5>Skew Frame <span class="info-icon" title="Increments the Rotation and Shear X Angle of a text frame by the same amount.">ⓘ</span></h5>
+      <sp-heading size="XS">Text Frame Manipulation</sp-heading>
+      <sp-body size="S" id="skew-frame">
+        <sp-label size="XS">SKEW FRAME <sp-icon size="xxs" class="info-icon" name="ui:InfoSmall" title="Increments the Rotation and Shear X Angle of a text frame by the same amount."></sp-icon></sp-label>
         <div class="input button_group">
-          <button class="left">Left</button>
-          <button class="right">Right</button>
+          <sp-button variant="secondary" class="left">Left</sp-button>
+          <sp-button variant="secondary" class="right">Right</sp-button>
         </div>
-      </div>
-      <div id="adjust-size-and-leading">
-        <h5>Adjust Size and Leading <span class="info-icon" title="Adjusts both the selected text's size and leading at the same time by the same point amount. Change this setting in Preferences > Units & Increments > Keyboard Increments > Size/Leading">ⓘ</span></h5>
+      </sp-body>
+      <sp-body size="XS" id="adjust-size-and-leading">
+        <sp-label size="XS">ADJUST SIZE AND LEADING <sp-icon size="xxs" class="info-icon" name="ui:InfoSmall" title="Adjusts both the selected text's size and leading at the same time by the same point amount. Change this setting in Preferences > Units & Increments > Keyboard Increments > Size/Leading"></sp-icon></sp-label>
         <div class="input button_group">
-          <button class="increase">Increase</button>
-          <button class="decrease">Decrease</button>
+          <sp-button variant="secondary" class="increase">Increase</sp-button>
+          <sp-button variant="secondary" class="decrease">Decrease</sp-button>
         </div>
-      </div>
-      <div>
-        <h5>Actions</h5>
-        <div class="input">
-          <button id="refit-overset-frames">Refit Overset Frames</button>
-          <span class="info-icon" title="Refits all of the overflowing frames on either the current page or all pages. InDesign's 'Fit Frame to Content' function doesn't work well, so this script nudges all the edges out pixel by pixel until the text is no longer overset.">ⓘ</span>
-        </div>
-        <div class="input">
-          <button id="scale-pages">Scale Pages</button>
-          <span class="info-icon" title="Scales all of the art and text at once, for given pages. Basically the same thing as selecting everything on a page, and running Object > Transform > Scale... on multiple pages.">ⓘ</span>
-        </div>
-        <div class="input">
-          <button id="position-art">Position Art</button>
-          <span class="info-icon" title="Scales and moves art within its frame, across a whole book.">ⓘ</span>
-        </div>
-        <div class="input">
-          <button id="manga-em-dash">Manga Em-Dash</button>
-          <span class="info-icon" title='Replaces all em dash glyphs with a 200% wide hyphen. Creates a new character style with the name "200% Width".'>ⓘ</span>
-        </div>
-        <div class="input">
-          <button id="pseudo-stroke">Pseudo-Stroke</button>
-          <span class="info-icon" title='An alternative to InDesign strokes. Creates a duplicate text frame, outlines it, and places it behind the original text frame.'>ⓘ</span>
-        </div>
-      </div>
+      </sp-body>
+      <sp-divider></sp-divider>
+      <sp-body size="XS">
+        <sp-heading size="XS">Actions</sp-heading>
+          <sp-button id="refit-overset-frames" title="Refits all of the overflowing frames on either the current page or all pages. InDesign's 'Fit Frame to Content' function doesn't work well, so this script nudges all the edges out pixel by pixel until the text is no longer overset.">Refit Overset Frames</sp-button>
+          <sp-button id="scale-pages" title="Scales all of the art and text at once, for given pages. Basically the same thing as selecting everything on a page, and running Object > Transform > Scale... on multiple pages.">Scale Pages</sp-button>
+          <sp-button id="position-art" title="Scales and moves art within its frame, across a whole book.">Position Art</sp-button>
+          <sp-button id="manga-em-dash" title='Replaces all em dash glyphs with a 200% wide hyphen. Creates a new character style with the name "200% Width".'>Manga Em-Dash</sp-button>
+          <sp-button id="pseudo-stroke" title='An alternative to InDesign strokes. Creates a duplicate text frame, outlines it, and places it behind the original text frame.'>Pseudo-Stroke</sp-button>
+      </sp-body>
     </section>
   </div>
 </body>

@@ -19,8 +19,12 @@ function setupBindingDirection() {
   // Not sure when this is used, but it's possible
   if (currentBinding == ID.PageBindingOptions.DEFAULT_VALUE)
     currentBinding = ID.PageBindingOptions.LEFT_TO_RIGHT;
+  
+  const currentBindingValue = currentBinding.toString();
+  const bindingDirection = document.querySelector('#binding_direction');
 
-  document.getElementById(`binding_direction_${currentBinding}`).checked = true;
+  bindingDirection.value = currentBindingValue;
+  bindingDirection.querySelector(`.${currentBindingValue}`).checked = true;
 }
 
 function setupFields(){
@@ -28,8 +32,7 @@ function setupFields(){
 }
 
 function setupClickBindings(){
-  const bindingDirections = document.querySelectorAll('#binding_direction input');
-  bindingDirections.forEach((ele) => ele.onclick = handleClickBindingDirection);
+  document.querySelector('#binding_direction').addEventListener("change", handleClickBindingDirection);
 
   document.querySelector("#adjust-size-and-leading .increase").onclick = scripts.adjustSizeAndLeading.increase;
   document.querySelector("#adjust-size-and-leading .decrease").onclick = scripts.adjustSizeAndLeading.decrease;

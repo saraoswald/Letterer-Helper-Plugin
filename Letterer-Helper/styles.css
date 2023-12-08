@@ -18,19 +18,17 @@
   display: flex;
   padding: 12px;
 }
-.grouped_radio input,
-.grouped_radio label,
-.info-icon,
+sp-radio,
+sp-button,
 button {
   cursor: pointer;
 }
 
 .button_group {
-  display: flex;
-
+  padding: 0.5em 0;
 }
-button {
-  padding: 0.5em;
+sp-button {
+  margin-right: 0.5em;
 }
 
 .hidden { display: none; }
@@ -92,7 +90,11 @@ section > div {
   margin-bottom: 0.5em;
 }
 
+sp-label,
 section .input {
   display: flex;
   align-items: center;
+}
+section .input {
+  padding: 0.5em 0;
 }
