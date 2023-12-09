@@ -121,12 +121,25 @@ section .input {
 .table_head_row {
   
 }
-.table_row {
-  display: flex;
+.table_page:before {
+  content: attr(page-num); /* todo: doesn't work?? */
 }
-.table_row .table_cell:first-child { 
-  width: 70px;
+.table_page {
+  border-top: 1px solid rgba(0, 55, 255, 0.8);
 }
-.table_row .table_cell:nth-child(n+2) { 
-  width: 50%;
-}
+  .table_row {
+    display: flex;
+  }
+  .table_row:nth-child(even) {
+    background: rgba(0,0,0,0.1);
+  }
+    .table_row .table_cell {
+      /* border: 1px solid red; */
+    }
+      .table_row .table_cell:first-child { 
+        max-width: 100px;
+        min-width: 100px;
+      }
+      /* .table_row .table_cell:nth-child(n+2) { 
+        width: 50%;
+      } */
