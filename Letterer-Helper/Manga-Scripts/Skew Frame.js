@@ -3,8 +3,6 @@
     Increments the Rotation and Shear X Angle of a text frame by the same amount
 */
 
-var doc = app.activeDocument;
-
 function doSkew(skewFactor) {
     var hasErrors = false,
         selections = app.selection;

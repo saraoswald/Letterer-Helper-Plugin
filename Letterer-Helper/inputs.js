@@ -51,7 +51,6 @@ function main(){
   setupFields();
   setupClickBindings();
 
-  app.activeDocument.addEventListener("key", (e) => {console.log(e)})
 }
 
 main();

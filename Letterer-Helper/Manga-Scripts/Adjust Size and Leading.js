@@ -1,9 +1,7 @@
-// ----------- Adjust Size and Leading - Decrease ----------- // 
+// ----------- Adjust Size and Leading ----------- // 
 /* 
     Increases the size and leading of a selected text frame by the user's leading setting. 
         - Change this setting in Preferences > Units & Increments > Keyboard Increments > Size/Leading
-
-    This is a sister script to "Adjust Size and Leading - Increase" 
 
     Updated: Aug 5 2023 - Sara Linsley
 */

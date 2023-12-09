@@ -104,6 +104,16 @@ section .input {
   padding: 0.5em 0;
 }
 
+.overlay {
+  width: 99%;
+  height: 95%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.overlay > * { margin: 0 auto; }
+
 .table_wrapper {
   width: 100%;
   border: 1px solid gray;
