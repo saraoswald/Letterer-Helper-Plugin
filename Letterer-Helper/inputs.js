@@ -19,7 +19,7 @@ function setupBindingDirection() {
   // Not sure when this is used, but it's possible
   if (currentBinding == ID.PageBindingOptions.DEFAULT_VALUE)
     currentBinding = ID.PageBindingOptions.LEFT_TO_RIGHT;
-  
+
   const currentBindingValue = currentBinding.toString();
   const bindingDirection = document.querySelector('#binding_direction');
 
@@ -50,6 +50,8 @@ function main(){
 
   setupFields();
   setupClickBindings();
+
+  app.activeDocument.addEventListener("key", (e) => {console.log(e)})
 }
 
 main();

@@ -14,12 +14,12 @@
   bottom: 0;
   width: 100vw;
   height: 100vh;
-  flex-direction: column;
-  display: flex;
   padding: 12px;
+  overflow: scroll;
 }
 sp-radio,
 sp-button,
+sp-action-button,
 button {
   cursor: pointer;
 }
@@ -29,6 +29,11 @@ button {
 }
 sp-button {
   margin-right: 0.5em;
+}
+sp-action-button { 
+  display: block;
+  margin: 0.5em 0;
+  text-align: center;
 }
 
 .hidden { display: none; }
@@ -97,4 +102,21 @@ section .input {
 }
 section .input {
   padding: 0.5em 0;
+}
+
+.table_wrapper {
+  width: 100%;
+  border: 1px solid gray;
+}
+.table_head_row {
+  
+}
+.table_row {
+  display: flex;
+}
+.table_row .table_cell:first-child { 
+  width: 70px;
+}
+.table_row .table_cell:nth-child(n+2) { 
+  width: 50%;
 }

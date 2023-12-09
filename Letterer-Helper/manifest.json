@@ -12,13 +12,8 @@
   "manifestVersion": 5,
   "entrypoints": [
     {
-      "type": "command",
-      "id": "showAlert",
-      "label": "Show alert"
-    },
-    {
       "type": "panel",
-      "id": "showPanel",
+      "id": "mainPanel",
       "minimumSize": {
         "width": 230,
         "height": 200
@@ -37,6 +32,58 @@
       },
       "label": {
         "default": "Letterer Helper"
+      },
+      "icons": [
+        {
+          "width": 23,
+          "height": 23,
+          "path": "icons/dark.png",
+          "scale": [
+            1,
+            2
+          ],
+          "theme": [
+            "darkest",
+            "dark",
+            "medium"
+          ]
+        },
+        {
+          "width": 23,
+          "height": 23,
+          "path": "icons/light.png",
+          "scale": [
+            1,
+            2
+          ],
+          "theme": [
+            "lightest",
+            "light"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "panel",
+      "id": "typesetTool",
+      "minimumSize": {
+        "width": 230,
+        "height": 200
+      },
+      "maximumSize": {
+        "width": 2000,
+        "height": 2000
+      },
+      "preferredDockedSize": {
+        "width": 300,
+        "height": 300
+      },
+      "preferredFloatingSize": {
+        "width": 300,
+        "height": 300
+      },
+      "label": {
+        "default": "Typeset Tool"
       },
       "icons": [
         {

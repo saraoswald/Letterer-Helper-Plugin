@@ -2,24 +2,20 @@ const { entrypoints } = require("uxp");
 const { app } = require("indesign");
 
 entrypoints.setup({
-  commands: {
-    showAlert: () => showAlert()
-  },
   panels: {
-    showPanel: {
-      show({node} = {}) {}
+    mainPanel: {
+      show(body) {
+        let content = document.getElementById('main_panel');
+        content.style.display = "";
+        body.appendChild(content);
+      }
+    },
+    typesetTool: {
+      show(body) { 
+        let content = document.getElementById('typeset_tool');
+        content.style.display = "";
+        body.appendChild(content);
+      }
     }
   }
 });
-
-showAlert = () => {
-  const dialog = app.dialogs.add();
-  const col = dialog.dialogColumns.add();
-  const colText = col.staticTexts.add();
-  colText.staticLabel = "Congratulations!!!!!!! You just executed your first command.";
-
-  dialog.canCancel = false;
-  dialog.show();
-  dialog.destroy();
-  return;
-}
