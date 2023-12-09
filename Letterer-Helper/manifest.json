@@ -3,6 +3,12 @@
   "name": "Letterer Helper",
   "version": "1.0.0",
   "main": "index.html",
+  "requiredPermissions": {
+    "clipboard": "readAndWrite",
+    "network": { "domains": ["all"] },
+    "localFileSystem": "fullAccess",
+    "allowCodeGenerationFromStrings": true
+  },
   "host": [
     {
       "app": "ID",

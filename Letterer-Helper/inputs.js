@@ -43,6 +43,9 @@ function setupClickBindings(){
   document.getElementById("position-art").onclick = scripts.positionArt;
   document.getElementById("manga-em-dash").onclick = scripts.mangaEmDash;
   document.getElementById("pseudo-stroke").onclick = scripts.pseudoStroke;
+
+  let typesetTool = document.getElementById("typeset_tool");
+  typesetTool.querySelector(".load_script").onclick = scripts.typeset.loadScript;
 }
 
 function main(){
