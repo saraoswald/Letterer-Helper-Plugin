@@ -44,8 +44,7 @@ function setupClickBindings(){
   document.getElementById("manga-em-dash").onclick = scripts.mangaEmDash;
   document.getElementById("pseudo-stroke").onclick = scripts.pseudoStroke;
 
-  let typesetTool = document.getElementById("typeset_tool");
-  typesetTool.querySelectorAll(".load_script").forEach(btn => btn.onclick = scripts.typeset.loadScript);
+  scripts.typeset.setupButtons();
 }
 
 function main(){
@@ -54,6 +53,7 @@ function main(){
   setupFields();
   setupClickBindings();
 
+  // TODO: stop pasting on close
 }
 
 main();

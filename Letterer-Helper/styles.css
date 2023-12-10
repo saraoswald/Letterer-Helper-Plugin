@@ -11,7 +11,7 @@
       --primary-color: #073b4c; /* override for light themes */
       --primary-color-inverse: #E8E8E8;
       --background-inverse: #414141;
-      --highlight-color: #ffd166;
+      --highlight-color: #e5ab23;
       --highlight-background: #dadada;
   }
 }
@@ -137,6 +137,7 @@ section .input {
   position: relative;
   padding: 0px;
 }
+.table_wrapper.pasting .table_cell { cursor: pointer; }
 .table_head_row {
   background: var(--background-inverse);
   color: var(--primary-color-inverse);
@@ -161,16 +162,13 @@ section .input {
   .table_row:nth-child(even) {
     background-color: var(--highlight-background);
   }
-    .table_row .table_cell {
-      /* border: 1px solid red; */
-    }
       .table_row .table_cell:first-child { 
         max-width: 100px;
         min-width: 100px;
       }
-      /* .table_row .table_cell:nth-child(n+2) { 
-        width: 50%;
-      } */
+      .table_row .table_cell.selected {
+        border: 3px solid var(--highlight-color);
+      }
 
 template {
   display: none;
