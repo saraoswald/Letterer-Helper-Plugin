@@ -16,11 +16,11 @@ Source: https://www.gutenberg.org/files/42671/42671-h/42671-h.htm
 	Mrs. Bennet: 	A single man of large fortune—four or five thousand a year.
 	Mrs. Bennet/aside:	What a fine thing for our girls! ☆
 	Mr. Bennet: 	How so? how can it affect them?
-.4	Mrs. Bennet: 	You must know that I am thinking of his marrying one of them.
+1.4	Mrs. Bennet: 	You must know that I am thinking of his marrying one of them.
 	Mrs. Bennet/aside:	You have no compassion on my poor nerves.
 	Mr. Bennet: 	You mistake me, my dear. 
 		I have a high respect for your nerves. They are my old friends.
 		I have heard you mention them with consideration these twenty years at least.
-.5	Mr. Bennet: 	But I hope you will get over it, and live to see many young men of four thousand a year come into the neighbourhood.
+1.5	Mr. Bennet: 	But I hope you will get over it, and live to see many young men of four thousand a year come into the neighbourhood.
 	Mrs. Bennet: 	It will be no use to us, if twenty such should come since you will not visit them.
 	Mr. Bennet:	Depend upon it, my dear, that when there are twenty, I will visit them all.
