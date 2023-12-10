@@ -43,6 +43,7 @@ async function getText() {
   }
 }
 
+let currentScript;
 /* 
   Parses script into this shape:
     {
@@ -61,6 +62,7 @@ async function getText() {
     }
 */
 function parseScript(script) {
+  currentScript = {};
   // TODO: try to guess the shape of the script + support more types
   const lines = script.split("\n");
   let parsedScript = {},
@@ -118,7 +120,7 @@ function placeText(parsedScript) {
     tableBody.innerHTML = "";
 
     // fill table body
-    Object.entries(parsedScript).forEach( page => {
+    Object.entries(parsedScript).forEach( (page, pageIndex) => {
       let pageNum = page[0],
           pageData = page[1],
           thisPage = templatePage.cloneNode(true);
@@ -126,7 +128,7 @@ function placeText(parsedScript) {
       thisPage.removeChild(thisPage.querySelector(".table_page_panel"));
       thisPage.querySelector(".page_num").innerHTML = pageNum;
 
-      Object.entries(pageData).forEach( panel => {
+      Object.entries(pageData).forEach( (panel, panelIndex) => {
         let panelData = panel[1],
             panelNum = panel[0],
             thisPanel = templatePanel.cloneNode(true);
@@ -138,11 +140,15 @@ function placeText(parsedScript) {
               thisLine.innerHTML = "";
           
           line.forEach( (cell, cellIndex) => {
-            let thisCell = templateCell.cloneNode(true);
+            let thisCell = templateCell.cloneNode(true),
+                cellId = `${pageIndex}-${panelIndex}-${lineIndex}-${cellIndex}`;
             thisCell.innerHTML = cell;
-            thisCell.setAttribute("cell-id", `${pageNum}-${panelNum}-${lineIndex}-${cellIndex}`);
+            thisCell.setAttribute("cell-id", cellId);
             thisLine.appendChild(thisCell);
             thisCell.onclick = changeSelection;
+
+            // store the value in global hash
+            currentScript[cellId] = cell;
           }) // forEach cell
 
           thisPanel.appendChild(thisLine);
@@ -183,11 +189,11 @@ function startPasting() {
       // select the first cell 
       thisSelection = panel.querySelector('.table_body').querySelector(".table_cell");
     }
-    setSelection(thisSelection)
+    setSelection(thisSelection);
 
     panel.querySelector(".table_wrapper").classList.add("pasting");
 
-    selection.focus();
+    selection.focus(); // todo: this doesnt work
   } catch(e) { console.log(e) }
 }
 
@@ -218,7 +224,12 @@ function setSelection(cell){
   selection = cell;
 
   selection.classList.add("selected");
-  console.log(selection.getAttribute("cell-id"));
+  // console.log(selection.getAttribute("cell-id"));
+}
+
+function goToCell(cellId) {
+  const newSelection = document.querySelector("#typeset_tool .table_body").querySelector(`.table_cell[cell-id="${cellId}"]`)
+  setSelection(newSelection);
 }
 
 // TODO: store progress for each file, and skip to the last used line on load
@@ -229,6 +240,32 @@ function loadScript() {
   textPromise.then(parsedScript => placeText(parsedScript));
 }
 
+function selectionChanged() {
+  const doc = app.activeDocument;
+  if (isPasting && doc.selection[0] instanceof ID.TextFrame && doc.selection[0].contents == '' && doc.selection[1] == null) {
+    pasteText();
+  }
+}
+
+function pasteText() {
+  if (!currentScript || !selection) return;
+  const doc = app.activeDocument,
+     cellId = selection.getAttribute("cell-id");
+
+  const textToPlace = currentScript[cellId];
+
+  doc.selection[0].contents = textToPlace;
+
+  // go to next line
+
+  let nextCell = cellId.split("-").map( n => parseInt(n) );
+  nextCell[2] += 1; // add one to the line count;
+  nextCell = nextCell.join("-"); // make it a string again
+
+  goToCell(nextCell);
+}
+
+
 function setupButtons() {
   let panel = document.getElementById("typeset_tool");
   panel.querySelectorAll(".load_script").forEach(btn => btn.onclick = loadScript);
@@ -236,6 +273,8 @@ function setupButtons() {
   isPasting = false;
   panel.querySelector(".control_wrapper .start").onclick = startPasting;
   panel.querySelector(".control_wrapper .stop").onclick = stopPasting;
+
+  app.activeDocument.addEventListener('afterSelectionChanged', selectionChanged);
   
 }
 
