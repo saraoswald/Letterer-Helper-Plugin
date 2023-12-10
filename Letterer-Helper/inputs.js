@@ -45,7 +45,7 @@ function setupClickBindings(){
   document.getElementById("pseudo-stroke").onclick = scripts.pseudoStroke;
 
   let typesetTool = document.getElementById("typeset_tool");
-  typesetTool.querySelector(".load_script").onclick = scripts.typeset.loadScript;
+  typesetTool.querySelectorAll(".load_script").forEach(btn => btn.onclick = scripts.typeset.loadScript);
 }
 
 function main(){

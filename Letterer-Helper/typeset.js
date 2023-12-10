@@ -43,6 +43,8 @@ function parseScript(script) {
       lastPageNum = 0;
   
   lines.forEach( line => {
+    if (line.length < 1 || line.toLowerCase().startsWith("page")) return;
+
     let lineData = line.split('\t'),
       panelNum = parseFloat(lineData[0]) || lastPanelNum,
       pageNum = Math.floor(panelNum);
@@ -72,44 +74,62 @@ function placeText(parsedScript) {
 
   console.log(parsedScript);
   
-  const panel = document.getElementById("typeset_tool"),
-    overlay = panel.querySelector('.overlay'),
-    tableWrapper = panel.querySelector(".table_wrapper"),
-    tableBody = tableWrapper.querySelector(".table_body"),
-    template = tableBody.querySelector("template div").cloneNode(true);
+  try {
+    // DOM elements
+    const panel = document.getElementById("typeset_tool"),
+      overlay = panel.querySelector('.overlay'),
+      controls = panel.querySelector('.control_wrapper'),
+      tableWrapper = panel.querySelector(".table_wrapper"),
+      tableBody = tableWrapper.querySelector(".table_body");
+    // templates
+    const templatePage = panel.querySelector("#template_page div").cloneNode(true), // true == deep clone
+      templatePanel = templatePage.querySelector('.table_page_panel').cloneNode(true),
+      templateLine = templatePanel.querySelector(".table_row").cloneNode(true),
+      templateCell = templateLine.querySelector(".table_cell").cloneNode(true);
 
-  Object.entries(parsedScript).forEach((page, pageNum) => {
-    let pageData = page[1],
-        templatePage = template.cloneNode(true); // true == deep clone
-    templatePage.setAttribute("page-num", pageNum);
+    // fill table head TODO
+    // Object.entries(parsedScript).find((page) => )
 
-    Object.entries(pageData).forEach((panel, panelNum) => {
-      let panelData = panel[1],
-          templatePanel = templatePage.querySelector('.table_page_panel');
-      templatePanel.setAttribute("panel-num", panelNum);
+    tableBody.innerHTML = "";
 
-      panelData.forEach( line => {
-        let templateLine = templatePanel.querySelector(".table_row").cloneNode(true),
-            templateCell = templateLine.querySelector(".table_cell").cloneNode(true);
-        templateLine.innerHTML = "";
-        
-        line.forEach( (cell) => {
-          let thisCell = templateCell.cloneNode(true);
-          thisCell.innerHTML = cell;
-          templateLine.appendChild(thisCell);
-        }) // forEach cell
+    // fill table body
+    Object.entries(parsedScript).forEach((page, index) => {
+      let pageNum = page[0],
+          pageData = page[1],
+          thisPage = templatePage.cloneNode(true);
 
-        templatePanel.appendChild(templateLine);
-      }); // forEach line
+      thisPage.removeChild(thisPage.querySelector(".table_page_panel"));
+      thisPage.querySelector(".page_num").innerHTML = pageNum;
 
-      templatePage.appendChild(templatePanel);
-    }) // forEach panel
+      Object.entries(pageData).forEach((panel, index) => {
+        let panelData = panel[1],
+            panelNum = panel[0],
+            thisPanel = templatePanel.cloneNode(true);
+        thisPanel.querySelector(".panel_num").innerHTML = panelNum;
 
-    tableBody.appendChild(templatePage);
-  }) // forEach page
+        panelData.forEach( line => {
+          let thisLine = templateLine.cloneNode(true);
+              thisLine.innerHTML = "";
+          
+          line.forEach( (cell) => {
+            let thisCell = templateCell.cloneNode(true);
+            thisCell.innerHTML = cell;
+            thisLine.appendChild(thisCell);
+          }) // forEach cell
 
-  overlay.style.display = "none";
-  tableWrapper.style.display = "";
+          thisPanel.appendChild(thisLine);
+        }); // forEach line
+
+        thisPage.appendChild(thisPanel);
+      }) // forEach panel
+
+      tableBody.appendChild(thisPage);
+    }) // forEach page
+
+    overlay.style.display = "none";
+    tableWrapper.style.display = "";
+    controls.style.display = "";
+  } catch(e) { console.log(e) }
 }
 
 

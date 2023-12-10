@@ -1,12 +1,22 @@
 :root {
-  --dark-blue: rgb(32, 32, 110);
-  --dark-gray: rgb(60, 60, 60);
-  --light-gray: rgb(219, 219, 219);
-  --light-green: rgb(102, 210, 113);
-  font-size: 12px;
+ /* default colors are for dark themes */
+ --primary-color: #E8E8E8;
+ --primary-color-inverse: #414141;
+ --background-inverse: #E8E8E8;
+ --highlight-color: #ffd166;
+ --highlight-background: #414141;
 }
+@media (prefers-color-scheme: lightest), (prefers-color-scheme:light) {
+  :root {
+      --primary-color: #073b4c; /* override for light themes */
+      --primary-color-inverse: #E8E8E8;
+      --background-inverse: #414141;
+      --highlight-color: #ffd166;
+      --highlight-background: #dadada;
+  }
+}
+
 .body {
-  background: white;
   position: absolute;
   top: 0;
   left: 0;
@@ -14,8 +24,9 @@
   bottom: 0;
   width: 100vw;
   height: 100vh;
+}
+#main_panel.body {
   padding: 12px;
-  overflow: scroll;
 }
 sp-radio,
 sp-button,
@@ -37,6 +48,15 @@ sp-action-button {
 }
 
 .hidden { display: none; }
+
+.body > sp-body {
+  height: 100%;
+  overflow: scroll;
+}
+#typeset_tool.body, 
+#typeset_tool sp-body {
+  overflow: hidden;
+}
 
 #progress_bar {
   height: 100vh;
@@ -64,7 +84,6 @@ sp-action-button {
   top: 0;
   height: 100%;
   width: 1em;
-  background: var(--light-green);
   border-radius: 7px;
 }
 #progress_bar.w-5 div:after { width: 5%; }
@@ -88,13 +107,6 @@ sp-action-button {
 #progress_bar.w-95 div:after { width: 95%; }
 #progress_bar.w-100 div:after { width: 100%; }
 
-section > div {
-  border: 1px solid var(--dark-blue);
-  border-radius: 3px;
-  padding: 0.5em 1em;
-  margin-bottom: 0.5em;
-}
-
 sp-label,
 section .input {
   display: flex;
@@ -103,7 +115,6 @@ section .input {
 section .input {
   padding: 0.5em 0;
 }
-
 .overlay {
   width: 99%;
   height: 95%;
@@ -114,24 +125,41 @@ section .input {
 }
 .overlay > * { margin: 0 auto; }
 
+.control_wrapper {
+  padding: 1em;
+  height: 4.5em;
+}
+
 .table_wrapper {
   width: 100%;
-  border: 1px solid gray;
+  height: calc(100vh - 4.5em);
+  overflow: scroll;
+  position: relative;
+  padding: 0px;
 }
 .table_head_row {
-  
-}
-.table_page:before {
-  content: attr(page-num); /* todo: doesn't work?? */
+  background: var(--background-inverse);
+  color: var(--primary-color-inverse);
 }
 .table_page {
-  border-top: 1px solid rgba(0, 55, 255, 0.8);
+  margin-top: 5px;
+  border-top: 4px solid var(--primary-color);
 }
+  .page_num:before { content: "PAGE "; }
+  .panel_num:before { content: "PANEL "; }
+  .panel_num, .page_num {
+    padding: 0 0.5em;
+  }
+  .table_page_panel {
+    margin-top: 5px;
+    border-top: 1px solid var(--primary-color);
+  }
   .table_row {
     display: flex;
+    padding: 0 0.5em;
   }
   .table_row:nth-child(even) {
-    background: rgba(0,0,0,0.1);
+    background-color: var(--highlight-background);
   }
     .table_row .table_cell {
       /* border: 1px solid red; */
@@ -143,3 +171,7 @@ section .input {
       /* .table_row .table_cell:nth-child(n+2) { 
         width: 50%;
       } */
+
+template {
+  display: none;
+}
