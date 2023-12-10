@@ -25,8 +25,6 @@
         - This script ignores page binding settings. Page 1 to the script is Page 1 to InDesign. 
 */
 
-var doc = app.activeDocument;
-
 const progressBar = require('./progress_bar.js');
 
 function myDisplayDialog() {
@@ -62,7 +60,7 @@ function myDisplayDialog() {
     if (myReturn == true) {
         var needsReview = false;
         var selectedPageRange = pageRangeControl.selectedButton;
-        var pageRange = selectedPageRange === 0 ? getValidRange(pageRangeInput.editContents) : doc.pages;
+        var pageRange = selectedPageRange === 0 ? getValidRange(pageRangeInput.editContents) : app.activeDocument.pages;
 
         if (selectedPageRange === 0 && pageRange.length === 0) {
             alert('Please enter a valid page range (e.g. "12, 32-33")');
@@ -104,7 +102,7 @@ function getValidRange(inp) {
     for (var i = 0; i < arr.length; i++) {
         var cleanRange = getCleanRange(arr[i]);
         for (var j = 0; cleanRange && j < cleanRange.length; j++) {
-            var pageObj = cleanRange[j] ? doc.pages.itemByName(cleanRange[j].toString()) : {};
+            var pageObj = cleanRange[j] ? app.activeDocument.pages.itemByName(cleanRange[j].toString()) : {};
             if (pageObj.isValid) {
                 resArr.push(pageObj);
             }
@@ -139,7 +137,7 @@ function isFramePastMargin(page, frame) {
 // takes bounds input and gives output in the form [y1, x1, y2, x2]
 // adds the document setting for bleed, taking into account the gutter
 function getPageBleed(page) {
-    var prfs = doc.documentPreferences,
+    var prfs = app.activeDocument.documentPreferences,
         pb = page.bounds,
         bleedLeft = page.side == ID.PageSideOptions.RIGHT_HAND ? 0 : prfs.documentBleedOutsideOrRightOffset,
         bleedRight = page.side == ID.PageSideOptions.LEFT_HAND ? 0 : prfs.documentBleedOutsideOrRightOffset;
@@ -151,14 +149,15 @@ function getPageBleed(page) {
     ]
 }
 
-// grab menu actions so we can invoke them later
-var doScaleUpOne = app.menuActions.itemByName("Increase scale by 1%");
-var doScaleUpFive = app.menuActions.itemByName("Increase scale by 5%");
-var doScaleDownOne = app.menuActions.itemByName("Decrease scale by 1%");
-var doScaleDownFive = app.menuActions.itemByName("Decrease scale by 5%");
 // Recursively scale the page, starting with 5% increments, 
 // until the equillibrium point of 100%
 function scaleSelected(factor) {
+    // grab menu actions so we can invoke them later
+    var doScaleUpOne = app.menuActions.itemByName("Increase scale by 1%");
+    var doScaleUpFive = app.menuActions.itemByName("Increase scale by 5%");
+    var doScaleDownOne = app.menuActions.itemByName("Decrease scale by 1%");
+    var doScaleDownFive = app.menuActions.itemByName("Decrease scale by 5%");
+    
     if (factor === 100) return;
     if (factor > 104 && doScaleUpFive.enabled) {
         doScaleUpFive.invoke();

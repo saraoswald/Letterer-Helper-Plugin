@@ -18,12 +18,12 @@ const progressBar = require('./progress_bar.js');
 
 /* ------ Start of Script ------ */
 
-var doc = app.activeDocument;
-var usersUnits = app.scriptPreferences.measurementUnit; // so we can revert 'em back later
-app.scriptPreferences.measurementUnit = ID.MeasurementUnits.PIXELS;
-
 const myDisplayDialog = function() {
-    myDialog = app.dialogs.add({ name: "Refit Overset Frames" });
+    var doc = app.activeDocument;
+    var usersUnits = app.scriptPreferences.measurementUnit; // so we can revert 'em back later
+    app.scriptPreferences.measurementUnit = ID.MeasurementUnits.PIXELS;
+
+    var myDialog = app.dialogs.add({ name: "Refit Overset Frames" });
     var pageRangeControl;
     with(myDialog) {
         with(dialogColumns.add()) {

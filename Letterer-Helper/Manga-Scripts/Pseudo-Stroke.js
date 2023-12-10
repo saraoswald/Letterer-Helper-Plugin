@@ -8,15 +8,6 @@
     More info on running scripts here: https://github.com/saraoswald/Manga-Scripts
 */
 
-// creates a new Character Style with these configurations
-var defaultObject = {
-    name: 'Stroke 2pt Paper', // change this to something else if you want to use that specific name for something else
-    strokeWeight: '2pt',
-    strokeColor: 'Paper',
-    endJoin: ID.OutlineJoin.ROUND_END_JOIN
-};
-var doc = app.activeDocument;
-
 var PARENT_LABEL = 'hasPseudoStroke'; // label placed on the final result group 
 var OUTLINE_LABEL = 'isStrokeGroup'; // label placed on just the background outlines;
 
@@ -86,11 +77,18 @@ function outline(obj) {
 }
 
 function doAddStroke(srcObj) {
+    // creates a new Character Style with these configurations
+    var defaultObject = {
+        name: 'Stroke 2pt Paper', // change this to something else if you want to use that specific name for something else
+        strokeWeight: '2pt',
+        strokeColor: 'Paper',
+        endJoin: ID.OutlineJoin.ROUND_END_JOIN
+    };
     // Check to see if the target character style already exists. If so, use it. If not, create it.
-    var existingStyle = doc.objectStyles.itemByName(defaultObject.name);
+    var existingStyle = app.activeDocument.objectStyles.itemByName(defaultObject.name);
     var targetStyle = existingStyle.isValid ?
         existingStyle :
-        doc.objectStyles.add(defaultObject);
+        app.activeDocument.objectStyles.add(defaultObject);
     var finalGroup = new Array(srcObj);
 
     // duplicate the object in place
@@ -113,7 +111,7 @@ function doAddStroke(srcObj) {
     if (needToGroupOutlines) {
         var groupedOutlines = null;
         if (formattedOutlines.length > 1) {
-            groupedOutlines = doc.groups.add(formattedOutlines);
+            groupedOutlines = app.activeDocument.groups.add(formattedOutlines);
         } else if (formattedOutlines.length == 1) {
             groupedOutlines = formattedOutlines[0];
         }
@@ -123,7 +121,7 @@ function doAddStroke(srcObj) {
 
     srcObj.bringToFront();
 
-    var newGroup = doc.groups.add(finalGroup);
+    var newGroup = app.activeDocument.groups.add(finalGroup);
     newGroup.insertLabel(PARENT_LABEL, 'true');
     return newGroup;
 }

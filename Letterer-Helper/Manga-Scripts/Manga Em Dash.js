@@ -22,8 +22,6 @@ var defaultStyle = {
     horizontalScale: 200,
 };
 
-var doc = app.activeDocument;
-
 function isError(obj) {
     if (!(obj instanceof TextFrame)) {
         alert('Please select only text frames and try again');
@@ -33,6 +31,8 @@ function isError(obj) {
 }
 
 function applyMangaDash(srcObj) {
+    var doc = app.activeDocument;
+    
     // Check to see if the Character Style already exists
     var existingStyle = doc.characterStyles.itemByName(defaultStyle.name);
     var targetStyle = existingStyle.isValid ?
