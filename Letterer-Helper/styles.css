@@ -162,6 +162,9 @@ section .input {
   .table_row:nth-child(even) {
     background-color: var(--highlight-background);
   }
+      .table_row .table_cell {
+        border: 3px solid transparent;
+      }
       .table_row .table_cell:first-child { 
         max-width: 100px;
         min-width: 100px;
