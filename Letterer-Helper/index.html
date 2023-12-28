@@ -64,17 +64,18 @@
         <sp-button class="load_script" variant="secondary">Reload Script</sp-button>
       </div>
       <div class="table_wrapper" style="display: none;">
-        <div class="table">
-          <div class="table_head">
-            <div class="table_head_row table_row">
-              <div class="table_head_cell table_cell">COLUMN 1</div>
-            </div>
-          </div>
-          <div class="table_body">
-          </div>
+        <div class="table_head table_row">
+          <!-- populated in JS -->
+        </div>
+        <div class="table_body">
+          <!-- populated in JS -->
         </div>
       </div>
     </sp-body>
+
+    <template id="template_head">
+      <div class="table_head_cell table_cell"></div>
+    </template>
 
     <template id="template_page">
       <div class="table_page">

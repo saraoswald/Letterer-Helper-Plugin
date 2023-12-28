@@ -66,6 +66,7 @@ function parseScript(script) {
   // TODO: try to guess the shape of the script + support more types
   const lines = script.split("\n");
   let parsedScript = {},
+      columnsCount = 1,
       lastPanelNum = 0.0,
       lastPageNum = 0;
   
@@ -87,19 +88,19 @@ function parseScript(script) {
     if(parseFloat(lineData[0]) || lineData[0] == "") lineData.shift();
     // add the line data into the panel 
     panelData.push(lineData);
+    // update the max number of columns
+    if (columnsCount < lineData.length) columnsCount = lineData.length;
     // update panel in the page
     pageData[panelNum] = panelData;
     // update the page in the whole script
     parsedScript[pageNum] = pageData;
   })
 
-  return parsedScript;
+  return [parsedScript, columnsCount];
 }
 
-function placeText(parsedScript) {
+function placeText(parsedScript, columnsCount) {
   if (!parsedScript) return; 
-
-  console.log(parsedScript);
   
   try {
     // DOM elements
@@ -107,19 +108,27 @@ function placeText(parsedScript) {
       overlay = panel.querySelector('.overlay'),
       controls = panel.querySelector('.control_wrapper'),
       tableWrapper = panel.querySelector(".table_wrapper"),
+      tableHead = tableWrapper.querySelector(".table_head"),
       tableBody = tableWrapper.querySelector(".table_body");
     // templates
-    const templatePage = panel.querySelector("#template_page div").cloneNode(true), // true == deep clone
+    const templateHead = panel.querySelector("#template_head div").cloneNode(true), // true == deep clone
+      templatePage = panel.querySelector("#template_page div").cloneNode(true),
       templatePanel = templatePage.querySelector('.table_page_panel').cloneNode(true),
       templateLine = templatePanel.querySelector(".table_row").cloneNode(true),
       templateCell = templateLine.querySelector(".table_cell").cloneNode(true);
 
-    // fill table head TODO
-    // Object.entries(parsedScript).find((page) => )
-
-    tableBody.innerHTML = "";
+    // fill table header
+    tableHead.innerHTML = "";
+    let thisHeader;
+    for ( let i = 0; i < columnsCount; i++ ) {
+      thisHeader = templateHead.cloneNode(true);
+      thisHeader.innerHTML = i + 1;
+      thisHeader.setAttribute("cell-id", `head-${i}`);
+      tableHead.appendChild(thisHeader);
+    }
 
     // fill table body
+    tableBody.innerHTML = "";
     Object.entries(parsedScript).forEach( (page, pageIndex) => {
       let pageNum = page[0],
           pageData = page[1],
@@ -224,7 +233,6 @@ function setSelection(cell){
   selection = cell;
 
   selection.classList.add("selected");
-  // console.log(selection.getAttribute("cell-id"));
 }
 
 function goToCell(cellId) {
@@ -237,7 +245,7 @@ function goToCell(cellId) {
 function loadScript() {
   const textPromise = getText();
 
-  textPromise.then(parsedScript => placeText(parsedScript));
+  textPromise.then((data) => { placeText(...data)});
 }
 
 function selectionChanged() {

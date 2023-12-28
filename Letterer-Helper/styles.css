@@ -134,14 +134,19 @@ section .input {
   width: 100%;
   height: calc(100vh - 4.5em);
   overflow: scroll;
-  position: relative;
   padding: 0px;
 }
 .table_wrapper.pasting .table_cell { cursor: pointer; }
-.table_head_row {
+.table_head {
   background: var(--background-inverse);
   color: var(--primary-color-inverse);
+  position: sticky;
+  top: 1;
+  width: 100%;
 }
+  .table_head .table_cell:before { 
+    content: "COLUMN ";
+  }
 .table_page {
   margin-top: 5px;
   border-top: 4px solid var(--primary-color);

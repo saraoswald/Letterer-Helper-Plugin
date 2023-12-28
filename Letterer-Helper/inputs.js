@@ -48,7 +48,7 @@ function setupClickBindings(){
 }
 
 function main(){
-  if (!app.activeDocument) { return }
+  if (!app || !app.activeDocument) { return }
 
   setupFields();
   setupClickBindings();
