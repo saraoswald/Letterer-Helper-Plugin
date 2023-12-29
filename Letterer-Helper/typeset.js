@@ -30,7 +30,7 @@ async function getText() {
 
     try {
       const file = await fsProvider.getFileForOpening({ types: [ "txt", "docx", "docx", "rtf" ] });
-      if (!file) { return; } // no file selected
+      if (!file) { return false; } // no file selected
 
       resetData(file.name);
 
@@ -257,7 +257,7 @@ function startPasting() {
 
     panel.querySelector(".table_wrapper").classList.add("pasting");
 
-    selection.focus(); // todo: this doesnt work
+    selection.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
   } catch(e) { console.log(e) }
 }
 
@@ -288,11 +288,15 @@ function setSelection(cell){
   selection = cell;
 
   selection.classList.add("selected");
+  selection.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
 }
 
-function goToCell(cellId) {
-  const newSelection = document.querySelector("#typeset_tool .table_body").querySelector(`.table_cell[cell-id="${cellId}"]`)
+function goToCell(data) {
+  const cellId = data.join("-");
+  const newSelection = document.querySelector("#typeset_tool .table_body").querySelector(`.table_cell[cell-id="${cellId}"]`);
   setSelection(newSelection);
+  
+  return newSelection;
 }
 
 // TODO: store progress for each file, and skip to the last used line on load
@@ -300,7 +304,12 @@ function goToCell(cellId) {
 function loadScript() {
   const textPromise = getText();
 
-  textPromise.then((data) => { setupTable(...data)});
+  textPromise.then((data) => { 
+    if (!data) return; // no file selected
+
+    stopPasting();
+    setupTable(...data);
+  });
 }
 
 function selectionChanged() {
@@ -322,10 +331,23 @@ function pasteText() {
   // go to next line
 
   let nextCell = cellId.split("-").map( n => parseInt(n) );
-  nextCell[2] += 1; // add one to the line count;
-  nextCell = nextCell.join("-"); // make it a string again
+  nextCell[2] += 1; // add one to the line index;
 
-  goToCell(nextCell);
+  let result = goToCell(nextCell);
+  // got to the end of the panel
+  if (!result) {
+    nextCell[2] = 0; // reset the line index
+    nextCell[1] += 1; // add one to the panel index
+    result = goToCell(nextCell);
+  }
+  // got to the end of the page
+  if (!result) {
+    nextCell[1] = 0; // reset the panel index
+    nextCell[0] += 1; // add one to the page index
+    result = goToCell(nextCell);
+  }
+  // got to the end of the document, stop pasting
+  if (!result) { stopPasting() }
 }
 
 
