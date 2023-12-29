@@ -1,40 +1,47 @@
 const fsProvider = require('uxp').storage.localFileSystem;
 const localStorage = window.localStorage;
-const sessionStorage = window.sessionStorage;
+// const sessionStorage = window.sessionStorage;
 
 function fetchData(key) {
-  const currentFile = sessionStorage.getItem("currentFile");
-  const data = sessionStorage.getItem(currentFile);
+  let data = localStorage.getItem(currentFile); // string
+  if (!data) return;
+
+  data = JSON.parse(data); // object
 
   return data[key];
 }
 
 function setData(key, value) {
-  const currentFile = sessionStorage.getItem("currentFile");
-  const data = sessionStorage.getItem(currentFile);
+  let data = localStorage.getItem(currentFile); // string
+  
+  if (!data) data = {}
+  else data = JSON.parse(data); // object
 
   data[key] = value;
 
-  sessionStorage.setItem(currentFile, data);
+  data = JSON.stringify(data); // back to string
+  localStorage.setItem(currentFile, data);
 }
 
+let currentScript, currentFile;
+
 function resetData(fileName) {
-  sessionStorage.setItem(fileName, {}); // empty out the storage for this file
-  sessionStorage.setItem("currentFile", fileName); // set it to be the current file
+  // localStorage.setItem(fileName, ""); // empty out the storage for this file
+  currentFile = fileName;
 }
 
 async function getText() {
-  // Ask user to select a file. Show their 'Desktop' as the default folder.
+  // Ask user to select a file
   if (fsProvider.isFileSystemProvider) {
-    const { domains } = require('uxp').storage;
+    // const { domains } = require('uxp').storage;
 
     try {
       const file = await fsProvider.getFileForOpening({ types: [ "txt", "docx", "docx", "rtf" ] });
       if (!file) { return false; } // no file selected
 
-      resetData(file.name);
-
       const text = await file.read();
+
+      resetData(file.name);
       
       return parseScript(text);
     } catch (err) {
@@ -43,7 +50,6 @@ async function getText() {
   }
 }
 
-let currentScript;
 /* 
   Parses script into this shape:
     {
@@ -245,32 +251,33 @@ function startPasting() {
     const lastSelection = fetchData("lastSelection");
     let thisSelection = null;
     if (lastSelection) {
-      // TODO
+      thisSelection = panel.querySelector('.table_body').querySelector(`.table_cell[cell-id="${lastSelection}"]`);
     } else if (selection) {
       thisSelection = selection;
-    } 
-    else {
+    } else {
       // select the first cell 
       thisSelection = panel.querySelector('.table_body').querySelector(".table_cell");
     }
     setSelection(thisSelection);
 
     panel.querySelector(".table_wrapper").classList.add("pasting");
-
-    selection.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
   } catch(e) { console.log(e) }
 }
 
-function stopPasting() {
+function stopPasting(isNewFile) {
   isPasting = false;
 
   let panel = document.getElementById("typeset_tool");
   panel.querySelector(".control_wrapper .start").style.display = "";
   panel.querySelector(".control_wrapper .stop").style.display = "none";
+
+  if (isNewFile != true && selection) {
+    setData("lastSelection", selection.getAttribute('cell-id'));
+  }
+
   setSelection(undefined);
   
   panel.querySelector(".table_wrapper").classList.remove("pasting");
-  // TODO: store last selection
 }
 
 function changeSelection(e) {
@@ -282,10 +289,10 @@ function changeSelection(e) {
 function setSelection(cell){
   let panel = document.getElementById("typeset_tool");
   panel.querySelector(".table_body").querySelectorAll(".table_cell.selected").forEach( cell => cell.classList.remove("selected") );
-
-  if (!cell) return; // skip if empty
     
   selection = cell;
+
+  if (!cell) return; // skip if empty
 
   selection.classList.add("selected");
   selection.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
@@ -307,7 +314,7 @@ function loadScript() {
   textPromise.then((data) => { 
     if (!data) return; // no file selected
 
-    stopPasting();
+    stopPasting(true);
     setupTable(...data);
   });
 }
