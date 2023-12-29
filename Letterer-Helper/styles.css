@@ -174,14 +174,17 @@ section .input {
       background-color: var(--highlight-background);
     }
         .table_row .table_cell {
-          border: 3px solid transparent;
-        }
-        .table_row .table_cell { 
+          border-width: 3px;
+          border-color: transparent;
           min-width: 100px;
           text-overflow: ellipsis;
+          margin-left: 5px;
         }
         .table_row .table_cell.selected {
           border: 3px solid var(--highlight-color);
+        }
+        .table_row .table_cell:not(:last-child) {
+          border-right: 1px solid var(--primary-color-inverse);
         }
 /* column resize icon */
 .table_head .icon.column_resize {
@@ -193,15 +196,9 @@ section .input {
   cursor: col-resize;
   text-align: right;
 }
-  .table_head .icon.column_resize:after {
-    content: '|';
-    text-align: right;
-  }
   .table_head .table_cell:last-child .icon.column_resize {
     display: none;
   }
-
-
 
 template {
   display: none;

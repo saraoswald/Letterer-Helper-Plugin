@@ -138,7 +138,10 @@ function setupTable(parsedScript, columnsCount) {
               columnId = curCol.getAttribute("column-id"),
               cells = tableWrapper.querySelectorAll(`.table_cell[column-id="${columnId}"]`);
 
-          cells.forEach(cell => { cell.style.minWidth = newWidth });
+          cells.forEach(cell => { 
+            cell.style.minWidth = newWidth;
+            cell.style.maxWidth = newWidth;
+          });
         }
       });
 
