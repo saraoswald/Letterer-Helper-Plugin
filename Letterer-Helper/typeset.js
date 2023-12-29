@@ -63,6 +63,7 @@ let currentScript;
 */
 function parseScript(script) {
   currentScript = {};
+  // TODO: make sure special characters are all unescaped from RTF's
   // TODO: try to guess the shape of the script + support more types
   const lines = script.split("\n");
   let parsedScript = {},
@@ -99,7 +100,7 @@ function parseScript(script) {
   return [parsedScript, columnsCount];
 }
 
-function placeText(parsedScript, columnsCount) {
+function setupTable(parsedScript, columnsCount) {
   if (!parsedScript) return; 
   
   try {
@@ -117,13 +118,63 @@ function placeText(parsedScript, columnsCount) {
       templateLine = templatePanel.querySelector(".table_row").cloneNode(true),
       templateCell = templateLine.querySelector(".table_cell").cloneNode(true);
 
+    // lightly adapted from source: https://stackoverflow.com/questions/58660470/resizing-column-width-on-a-table
+    function setListeners(div) {
+      let pageX, curCol, curColWidth;
+
+      div.addEventListener('mousedown', function(e) { 
+        curCol = e.target.parentElement;
+        pageX = e.pageX;
+
+        let padding = paddingDiff(curCol);
+
+        curColWidth = curCol.offsetWidth - padding;
+      });
+
+      document.addEventListener('mousemove', function(e) {
+        if (curCol) {
+          let diffX = e.pageX - pageX,
+              newWidth = (curColWidth + diffX) + 'px',
+              columnId = curCol.getAttribute("column-id"),
+              cells = tableWrapper.querySelectorAll(`.table_cell[column-id="${columnId}"]`);
+
+          cells.forEach(cell => { cell.style.minWidth = newWidth });
+        }
+      });
+
+      document.addEventListener('mouseup', function(e) {
+        curCol = undefined;
+        pageX = undefined;
+        curColWidth = undefined
+      });
+    }
+
+    function paddingDiff(col) {
+      if (getStyleVal(col, 'box-sizing') == 'border-box') {
+        return 0;
+      }
+
+      var padLeft = getStyleVal(col, 'padding-left');
+      var padRight = getStyleVal(col, 'padding-right');
+      return (parseInt(padLeft) + parseInt(padRight));
+
+    }
+
+    function getStyleVal(elm, css) {
+      return (window.getComputedStyle(elm, null).getPropertyValue(css))
+    }
+    // end stackoverflow source
+
     // fill table header
     tableHead.innerHTML = "";
     let thisHeader;
     for ( let i = 0; i < columnsCount; i++ ) {
       thisHeader = templateHead.cloneNode(true);
-      thisHeader.innerHTML = i + 1;
-      thisHeader.setAttribute("cell-id", `head-${i}`);
+      thisHeader.querySelector(".table_column_name").innerHTML = i + 1;
+      thisHeader.setAttribute("column-id", i);
+
+      setListeners(thisHeader);
+
       tableHead.appendChild(thisHeader);
     }
 
@@ -153,6 +204,7 @@ function placeText(parsedScript, columnsCount) {
                 cellId = `${pageIndex}-${panelIndex}-${lineIndex}-${cellIndex}`;
             thisCell.innerHTML = cell;
             thisCell.setAttribute("cell-id", cellId);
+            thisCell.setAttribute("column-id", cellIndex);
             thisLine.appendChild(thisCell);
             thisCell.onclick = changeSelection;
 
@@ -245,7 +297,7 @@ function goToCell(cellId) {
 function loadScript() {
   const textPromise = getText();
 
-  textPromise.then((data) => { placeText(...data)});
+  textPromise.then((data) => { setupTable(...data)});
 }
 
 function selectionChanged() {

@@ -144,39 +144,64 @@ section .input {
   top: 1;
   width: 100%;
 }
-  .table_head .table_cell:before { 
+  .table_head .table_head_cell {
+    position: relative;
+  }
+  .table_head .table_cell .table_column_name:before { 
     content: "COLUMN ";
   }
-.table_page {
-  margin-top: 5px;
-  border-top: 4px solid var(--primary-color);
+.table_body {
+  margin-top: 1em;
 }
-  .page_num:before { content: "PAGE "; }
-  .panel_num:before { content: "PANEL "; }
-  .panel_num, .page_num {
-    padding: 0 0.5em;
-  }
-  .table_page_panel {
+  .table_page {
     margin-top: 5px;
-    border-top: 1px solid var(--primary-color);
+    border-top: 4px solid var(--primary-color);
   }
-  .table_row {
-    display: flex;
-    padding: 0 0.5em;
+    .page_num:before { content: "PAGE "; }
+    .panel_num:before { content: "PANEL "; }
+    .panel_num, .page_num {
+      padding: 0 0.5em;
+    }
+    .table_page_panel {
+      margin-top: 5px;
+      border-top: 1px solid var(--primary-color);
+    }
+    .table_row {
+      display: flex;
+      padding: 0 0.5em;
+    }
+    .table_row:nth-child(even) {
+      background-color: var(--highlight-background);
+    }
+        .table_row .table_cell {
+          border: 3px solid transparent;
+        }
+        .table_row .table_cell { 
+          min-width: 100px;
+          text-overflow: ellipsis;
+        }
+        .table_row .table_cell.selected {
+          border: 3px solid var(--highlight-color);
+        }
+/* column resize icon */
+.table_head .icon.column_resize {
+  height: 100%;
+  padding: 0 5px;
+  position: absolute;
+  right: -5px;
+  top: 0px;
+  cursor: col-resize;
+  text-align: right;
+}
+  .table_head .icon.column_resize:after {
+    content: '|';
+    text-align: right;
   }
-  .table_row:nth-child(even) {
-    background-color: var(--highlight-background);
+  .table_head .table_cell:last-child .icon.column_resize {
+    display: none;
   }
-      .table_row .table_cell {
-        border: 3px solid transparent;
-      }
-      .table_row .table_cell:first-child { 
-        max-width: 100px;
-        min-width: 100px;
-      }
-      .table_row .table_cell.selected {
-        border: 3px solid var(--highlight-color);
-      }
+
+
 
 template {
   display: none;
