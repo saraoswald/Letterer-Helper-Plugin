@@ -41,6 +41,8 @@ async function getText() {
 
       const text = await file.read();
 
+      stopPasting();
+
       resetData(file.name);
       
       return parseScript(text);
@@ -252,6 +254,7 @@ function startPasting() {
     let thisSelection = null;
     if (lastSelection) {
       thisSelection = panel.querySelector('.table_body').querySelector(`.table_cell[cell-id="${lastSelection}"]`);
+      thisSelection.classList.add("history-selection");
     } else if (selection) {
       thisSelection = selection;
     } else {
@@ -264,14 +267,14 @@ function startPasting() {
   } catch(e) { console.log(e) }
 }
 
-function stopPasting(isNewFile) {
+function stopPasting() {
   isPasting = false;
 
   let panel = document.getElementById("typeset_tool");
   panel.querySelector(".control_wrapper .start").style.display = "";
   panel.querySelector(".control_wrapper .stop").style.display = "none";
 
-  if (isNewFile != true && selection) {
+  if (selection) {
     setData("lastSelection", selection.getAttribute('cell-id'));
   }
 
@@ -282,6 +285,8 @@ function stopPasting(isNewFile) {
 
 function changeSelection(e) {
   if (!isPasting) return;
+
+  e.target.classList.remove("history-selection");
 
   setSelection(e.target);
 }
@@ -314,7 +319,6 @@ function loadScript() {
   textPromise.then((data) => { 
     if (!data) return; // no file selected
 
-    stopPasting(true);
     setupTable(...data);
   });
 }
