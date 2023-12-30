@@ -88,6 +88,10 @@ function parseScript(script, fileName) {
 }
 
 function parseRtf(script) {
+  // change all curly quotes to straight
+  // the RTF parser doesn't handle them... TODO: fix?
+  script = script.replaceAll(/\\'9[12]/gi, "'"); // replace apostrophes
+  script = script.replaceAll(/\\'9[34]/gi, "\""); 
 
   const rtfParser = require('./libraries/rtf2html/index.js');
   const scriptHTML = rtfParser(script);
@@ -117,7 +121,7 @@ function parseTxt(script) {
     let pageData = parsedScript[pageNum] || {},
         panelData = pageData[panelNum] || [];
     // pop out panel number if it's in there
-    if(parseFloat(lineData[0]) || lineData[0] == "") lineData.shift();
+    if (parseFloat(lineData[0]) || lineData[0] == "") lineData.shift();
     // add the line data into the panel 
     panelData.push(lineData);
     // update the max number of columns

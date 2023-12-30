@@ -1535,7 +1535,7 @@ module.exports = function(txt, baseurl, out, ver)
                                 break;
 
                         case "tab":
-                                o.html.push("&nbsp;&nbsp;&nbsp;&nbsp;");
+                                // o.html.push("&nbsp;&nbsp;&nbsp;&nbsp;");
                                 break;
 
                         case "li":
@@ -1583,80 +1583,80 @@ module.exports = function(txt, baseurl, out, ver)
                                 break;
 
                         // font size
-                        case "fs":
+                        // case "fs":
 
-                                if (o.chgsz < 0)
-                                {
-                                        for ( ; o.chgsz < 0; o.chgsz++)
-                                                o.html.push("</SMALL>");
-                                }
-                                else if (o.chgsz > 0)
-                                {
-                                        for ( ; o.chgsz > 0; o.chgsz--)
-                                                o.html.push("</BIG>");
-                                }                               
+                        //         if (o.chgsz < 0)
+                        //         {
+                        //                 for ( ; o.chgsz < 0; o.chgsz++)
+                        //                         o.html.push("</SMALL>");
+                        //         }
+                        //         else if (o.chgsz > 0)
+                        //         {
+                        //                 for ( ; o.chgsz > 0; o.chgsz--)
+                        //                         o.html.push("</BIG>");
+                        //         }                               
 
-                                switch (val >> 1)
-                                {
-                                        case 12:
-                                                o.chgsz = 1;
-                                                o.html.push("<BIG>");
-                                                break;
-                                        case 10:
-                                                break;
-                                        case 8:
-                                                o.chgsz = -1;
-                                                o.html.push("<SMALL>");
-                                                break;
-                                }
-                                break;
+                        //         switch (val >> 1)
+                        //         {
+                        //                 case 12:
+                        //                         o.chgsz = 1;
+                        //                         o.html.push("<BIG>");
+                        //                         break;
+                        //                 case 10:
+                        //                         break;
+                        //                 case 8:
+                        //                         o.chgsz = -1;
+                        //                         o.html.push("<SMALL>");
+                        //                         break;
+                        //         }
+                        //         break;
                         
-                        case "line":
-                                if (o.bullets)
-                                {
-                                        if (!o.bulletline)
-                                                o.bulletline = true;
-                                }
+                        // case "line":
+                        //         if (o.bullets)
+                        //         {
+                        //                 if (!o.bulletline)
+                        //                         o.bulletline = true;
+                        //         }
 
-                                o.html.push("<BR>");
-                                break;
+                        //         o.html.push("<BR>");
+                        //         break;
 
-                        case "par":
-                                Img_("RIGHT");
-                                o.newpara = true;
-                                if (o.bullets)
-                                {
-                                        if (o.bulletline)
-                                        {
-                                                o.html.push("<BR>");
-                                                o.bulletline = false;
-                                        }
-                                        o.html.push("</LI>");
-                                        o.par_beg = "<LI>";
-                                }
-                                else if (null == o.par_end)
-                                {
-                                        o.html.push("<BR>");
-                                }
-                                else
-                                {
-                                        o.html.push(o.par_end);
-                                        o.par_end = null;
-                                }
-                                break;
+                        // case "par":
+                        //         Img_("RIGHT");
+                        //         o.newpara = true;
+                        //         if (o.bullets)
+                        //         {
+                        //                 if (o.bulletline)
+                        //                 {
+                        //                         o.html.push("<BR>");
+                        //                         o.bulletline = false;
+                        //                 }
+                        //                 o.html.push("</LI>");
+                        //                 o.par_beg = "<LI>";
+                        //         }
+                        //         else if (null == o.par_end)
+                        //         {
+                        //                 o.html.push("<BR>");
+                        //         }
+                        //         else
+                        //         {
+                        //                 o.html.push(o.par_end);
+                        //                 o.par_end = null;
+                        //         }
+                        //         break;
                         
-                        case "qc":
-                                o.center = true;
-                                if (0 === val)
-                                {
-                                        o.center = false;
-                                        o.html.push("</CENTER>");
-                                }
-                                else
-                                {
-                                        o.html.push("<CENTER>");
-                                }
-                                break;
+                        // case "qc":
+                        //         o.center = true;
+                        //         if (0 === val)
+                        //         {
+                        //                 o.center = false;
+                        //                 o.html.push("</CENTER>");
+                        //         }
+                        //         else
+                        //         {
+                        //                 o.html.push("<CENTER>");
+                        //         }
+                        //         break;
 
                         case "b":
                                 if (0 === val)
@@ -1670,18 +1670,18 @@ module.exports = function(txt, baseurl, out, ver)
                                 else
                                         o.html.push("<I>");
                                 break;
-                        case "strike":
-                                if (0 === val)
-                                        o.html.push("</S>");
-                                else
-                                        o.html.push("<S>");
-                                break;
-                        case "ul":
+                        // case "strike":
+                        //         if (0 === val)
+                        //                 o.html.push("</S>");
+                        //         else
+                        //                 o.html.push("<S>");
+                        //         break;
+                        // case "ul":
                         case "u":
                                 if (0 === val)
-                                        o.html.push("</U>");
+                                        o.html.push("</EM>");
                                 else
-                                        o.html.push("<U>");
+                                        o.html.push("<EM>");
                                 break;
                 }
 
@@ -1689,63 +1689,63 @@ module.exports = function(txt, baseurl, out, ver)
 
                 function Img_(align)
                 {
-                        if (null != o.doc.limg)
-                        {
-                                var imgtag = "<IMG SRC=\"" + o.doc.baseurl + o.doc.limg.name +
-                                        "\" HSPACE=\"5\" VSPACE=\"5\" " +
-                                        (null == align ? "" : "ALIGN=\"" + align + "\"") + " />";
+                        // if (null != o.doc.limg)
+                        // {
+                        //         var imgtag = "<IMG SRC=\"" + o.doc.baseurl + o.doc.limg.name +
+                        //                 "\" HSPACE=\"5\" VSPACE=\"5\" " +
+                        //                 (null == align ? "" : "ALIGN=\"" + align + "\"") + " />";
 
-                                if ("RIGHT" == align && null != o.lastpari)
-                                {
-                                        o.html.splice(o.lastpari, 0, imgtag);
-                                }
-                                else
-                                {
-                                        o.html.push(imgtag);
-                                }
+                        //         if ("RIGHT" == align && null != o.lastpari)
+                        //         {
+                        //                 o.html.splice(o.lastpari, 0, imgtag);
+                        //         }
+                        //         else
+                        //         {
+                        //                 o.html.push(imgtag);
+                        //         }
 
-                                o.doc.limg = null;
-                        }
+                        //         o.doc.limg = null;
+                        // }
                 }
 
                 function EndPara_()
                 {
                         Img_();
-                        if (o.center)
-                        {
-                                o.html.push("</CENTER>");
-                                o.center = false;
-                        }
+                        // if (o.center)
+                        // {
+                        //         o.html.push("</CENTER>");
+                        //         o.center = false;
+                        // }
                         o.newpara = true;
                         o.bulletline = false;
                         o.par_beg = null;
-                        if (o.chgsz < 0)
-                        {
-                                for ( ; o.chgsz < 0; o.chgsz++)
-                                        o.html.push("</SMALL>");
-                        }
-                        else if (o.chgsz > 0)
-                        {
-                                for ( ; o.chgsz > 0; o.chgsz--)
-                                        o.html.push("</BIG>");
-                        }
-                        if (o.monofont)
-                        {
-                                o.html.push("</CODE>");
-                                o.monofont = false;
-                        }
-                        if (o.indented)
-                        {
-                                o.html.push("</BLOCKQUOTE>");
-                                o.par_end = "";
-                                o.indented = false;
-                        }
-                        if (o.bullets)
-                        {
-                                o.html.push("</UL>");
-                                o.par_end = "";
-                                o.bullets = false;
-                        }
+                        // if (o.chgsz < 0)
+                        // {
+                        //         for ( ; o.chgsz < 0; o.chgsz++)
+                        //                 o.html.push("</SMALL>");
+                        // }
+                        // else if (o.chgsz > 0)
+                        // {
+                        //         for ( ; o.chgsz > 0; o.chgsz--)
+                        //                 o.html.push("</BIG>");
+                        // }
+                        // if (o.monofont)
+                        // {
+                        //         o.html.push("</CODE>");
+                        //         o.monofont = false;
+                        // }
+                        // if (o.indented)
+                        // {
+                        //         o.html.push("</BLOCKQUOTE>");
+                        //         o.par_end = "";
+                        //         o.indented = false;
+                        // }
+                        // if (o.bullets)
+                        // {
+                        //         o.html.push("</UL>");
+                        //         o.par_end = "";
+                        //         o.bullets = false;
+                        // }
                 }
 
                 function esc_(s)
@@ -1754,6 +1754,7 @@ module.exports = function(txt, baseurl, out, ver)
                                         .replace(/</g, '&lt;')          // open bracket
                                         .replace(/>/g, '&gt;')          // close bracket
                                         .replace(/\"/g, '&quot;')       // quote
+                                        .replace(/\'9[23]/g, '&quot;')       // quote
                                         .replace(/  /g, " &nbsp;")
                                         ;
                 }
@@ -1765,23 +1766,23 @@ module.exports = function(txt, baseurl, out, ver)
                 if (513 === t)
                 {
                         o.stk[o.stk.length-2].bullets = true;
-                        o.stk[o.stk.length-2].html.push("<UL><LI>");
+                        // o.stk[o.stk.length-2].html.push("<UL><LI>");
                 }
         }
 
         //-[Bullets_()]-----------------------------------------------------------
         function ListText_(t, s, i, o)
         {
-                if (513 === t)
-                {
-                        var bullets = o.stk[o.stk.length-2].bullets;
-                        o.stk[o.stk.length-2].bullets = true;
-                        if (!bullets) {
-                                o.stk[o.stk.length-2].html.push("<UL><LI>");
-                        } else {
-                                o.stk[o.stk.length-2].html.push("</LI><LI>");
-                        }
-                }
+                // if (513 === t)
+                // {
+                //         var bullets = o.stk[o.stk.length-2].bullets;
+                //         o.stk[o.stk.length-2].bullets = true;
+                //         if (!bullets) {
+                //                 o.stk[o.stk.length-2].html.push("<UL><LI>");
+                //         } else {
+                //                 o.stk[o.stk.length-2].html.push("</LI><LI>");
+                //         }
+                // }
         }
 
         //-[Pkg_()]---------------------------------------------------------------
