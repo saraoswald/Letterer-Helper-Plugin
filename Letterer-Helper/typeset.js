@@ -36,7 +36,7 @@ async function getText() {
     // const { domains } = require('uxp').storage;
 
     try {
-      const file = await fsProvider.getFileForOpening({ types: [ "txt", "docx", "docx", "rtf" ] });
+      const file = await fsProvider.getFileForOpening({ types: [ "txt", "rtf" ] });
       if (!file) { return false; } // no file selected
 
       const text = await file.read();
@@ -45,7 +45,7 @@ async function getText() {
 
       resetData(file.name);
       
-      return parseScript(text);
+      return parseScript(text, file.name);
     } catch (err) {
       console.error(err);
     }
@@ -69,10 +69,33 @@ async function getText() {
       }
     }
 */
-function parseScript(script) {
+function parseScript(script, fileName) {
   currentScript = {};
-  // TODO: make sure special characters are all unescaped from RTF's
   // TODO: try to guess the shape of the script + support more types
+
+  let fileType = fileName.split('.').pop();
+  try {
+    if (fileType == "txt") { 
+      return parseTxt(script);
+    } else if (fileType == "rtf") {
+      return parseRtf(script);
+    }
+  } catch (err) {
+    // todo: make an error popup
+    console.log(err);
+    return false;
+  }
+}
+
+function parseRtf(script) {
+
+  const rtfParser = require('./libraries/rtf2html/index.js');
+  const scriptHTML = rtfParser(script);
+
+  return parseTxt(scriptHTML);
+}
+
+function parseTxt(script) {
   const lines = script.split("\n");
   let parsedScript = {},
       columnsCount = 1,
