@@ -305,8 +305,11 @@ function GetRtfTk(s, i)
                                 code += s.charAt(thisIndex);
                                 thisIndex++;
                         }
+
+                        var codeLen = code.length;
                         code = parseInt(code);
-                        return  (1 << 31) | ((code+32768) << 15) | 1282;
+
+                        return (1 << 31) | ((code+32768) << 15) | (0 << 11) | (5 << 8) | (codeLen + 2);
                 }
 
                 // digits possibly preceded by a hyphen
