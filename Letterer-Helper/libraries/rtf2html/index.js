@@ -206,7 +206,8 @@ function NewRtfTk(typ, len, val, skp)
 function GetRtfTk(s, i)
 {
         var c = s.charCodeAt(i);
-
+        var originalIndex = i;
+        
         // { open brace
         if (123 === c)
         {
@@ -287,6 +288,25 @@ function GetRtfTk(s, i)
 
                         // NewRtfTk(RtfConst().SYMBOL, 2, c);
                         return (1 << 31) | ((c+32768) << 15) | 1282;
+                }
+                // unicode character
+                // the pattern is \uXXX
+                //   where XXX is the unicode code
+                // TODO: this still allows the code to appear after the character?? e.g. ♡9825 
+                if (len == 2 && (s.charCodeAt(originalIndex + 1) == 117)) {
+                        // grab the code
+                        var code = "", thisChar = c, thisIndex = originalIndex + 2;
+                        while (thisChar && (thisIndex < originalIndex + 15)) {
+                                thisChar = s.charCodeAt(thisIndex)
+                                
+                                // numbers only pls
+                                if (thisChar <= 47 || thisChar >= 58) break;
+                                
+                                code += s.charAt(thisIndex);
+                                thisIndex++;
+                        }
+                        code = parseInt(code);
+                        return  (1 << 31) | ((code+32768) << 15) | 1282;
                 }
 
                 // digits possibly preceded by a hyphen
@@ -1750,13 +1770,7 @@ module.exports = function(txt, baseurl, out, ver)
 
                 function esc_(s)
                 {
-                        return s.replace(/&/g, '&amp;')         // ampersands
-                                        .replace(/</g, '&lt;')          // open bracket
-                                        .replace(/>/g, '&gt;')          // close bracket
-                                        .replace(/\"/g, '&quot;')       // quote
-                                        .replace(/\'9[23]/g, '&quot;')       // quote
-                                        .replace(/  /g, " &nbsp;")
-                                        ;
+                        return s;
                 }
         }
 
