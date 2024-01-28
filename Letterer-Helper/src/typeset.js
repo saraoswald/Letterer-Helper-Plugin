@@ -1,6 +1,7 @@
 const localStorage = window.localStorage;
 // const sessionStorage = window.sessionStorage;
 
+
 function fetchData(key) {
   let data = localStorage.getItem(currentFile); // string
   if (!data) return;
@@ -102,7 +103,19 @@ function parseScript(script, fileName) {
 function parseDocx(script) {
   const docx2html = require("docx2html");
   docx2html(script).then(scriptHTML => {
-    console.log(scriptHTML);
+    const panel = document.getElementById("typeset_tool"),
+      overlay = panel.querySelector('.overlay'),
+      controls = panel.querySelector('.control_wrapper'),
+      tableWrapper = panel.querySelector(".table_wrapper");
+      
+    tableWrapper.innerHTML = scriptHTML.toString();
+
+    overlay.style.display = "none";
+    tableWrapper.style.display = "";
+    controls.style.display = "";
+
+    togglePanelLoading();
+
   }).catch(error => {
     console.log(error)
   });
