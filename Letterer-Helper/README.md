@@ -1,5 +1,3 @@
-# Introduction
-Start by saying a simple Hello world within a UXP plugin or use this as a template to add your code. This plugin has a very basic setup for you to create a `command` and a `panel` within a UXP plugin. 
 
 ## Compatibility
 Since InDesign v18.5 and UXP v7.1.
@@ -16,3 +14,11 @@ Load plugin into the application via UXP Developer Tool (UDT)
 2. Click on 'Add Plugin' button and select the `manifest.json` of this plugin.
 3. Click on the menu -> Load to view the plugin under the 'Plugins' menu inside your application.
 
+## Development
+This repo uses Node to load dependencies. To make changes in development, run:
+```
+npm install
+npm run build
+```
+
+This will run Webpack, updating the Javascript bundle.

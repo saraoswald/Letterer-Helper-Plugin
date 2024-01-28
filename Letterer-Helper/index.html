@@ -5,10 +5,7 @@
   <link rel="stylesheet" href="styles.css">
 
   <script src="index.js"></script>
-  <script src="inputs.js"></script>
-  <script src="scripts.js" type="module"></script>
-  <script src="./Manga-Scripts/progress_bar.js" type="module"></script>
-  <script src="./libraries/rtf2html/index.js" type="module"></script>
+  <script src="./dist/inputs.bundle.js"></script>
 </head>
 
 <body>
@@ -56,8 +53,15 @@
   </div>
   <div class="body" id="typeset_tool" style="display: none;">
     <sp-body size="XS">
-      <div class="overlay">
+      <div class="overlay start">
         <sp-button class="load_script">Load Script</sp-button>
+      </div>
+      <div class="overlay loading" style="display: none;">
+        <div class="progress_bar">
+          <sp-progressbar max=100 value=50>
+            <sp-label slot="label">Loading...</sp-label>
+          </sp-progressbar>
+        </div>
       </div>
       <div class="control_wrapper" style="display: none;">
         <sp-button class="start">Start</sp-button>
@@ -93,5 +97,12 @@
       </div>
     </template>
   </div>
+  <dialog id="dialog">
+    <div>
+      <h1 class="title"></h1>
+      <div class="message"></div>
+      <footer><sp-button variant="cta" class="close">OK</sp-button></footer>
+    </div>
+  </dialog>
 </body>
 </html>

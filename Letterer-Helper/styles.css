@@ -18,6 +18,16 @@
   }
 }
 
+dialog > div {
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  width: 400px;
+}
+dialog > div > p {
+  margin-top: 30px;
+}
+
 .body {
   position: absolute;
   top: 0;
@@ -151,6 +161,11 @@ section .input {
   padding: 0px;
 }
 .table_wrapper.pasting .table_body .table_cell { cursor: pointer; }
+#typeset_tool.loading .table_wrapper,
+#typeset_tool.loading .control_wrapper { 
+  display: none;
+}
+
 .table_head {
   background: var(--background-inverse);
   color: var(--primary-color-inverse);

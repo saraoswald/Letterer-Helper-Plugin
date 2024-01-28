@@ -1,4 +1,3 @@
-const fsProvider = require('uxp').storage.localFileSystem;
 const localStorage = window.localStorage;
 // const sessionStorage = window.sessionStorage;
 
@@ -30,24 +29,35 @@ function resetData(fileName) {
   currentFile = fileName;
 }
 
+function resetDialog(){
+  resetData();
+  stopPasting();
+}
+
 async function getText() {
   // Ask user to select a file
   if (fsProvider.isFileSystemProvider) {
-    // const { domains } = require('uxp').storage;
 
     try {
-      const file = await fsProvider.getFileForOpening({ types: [ "txt", "rtf" ] });
+      const file = await fsProvider.getFileForOpening({ types: [ "txt", "rtf", "docx" ] });
       if (!file) { return false; } // no file selected
 
-      const text = await file.read();
+      let text;
+      try {
+        text = await file.read(); // try utf-8 encoding
+      } catch (textError){
+        text = await file.read({format: formats.binary}); // try binary encoding
+        // if that doesn't work, the parent try/catch will show an error
+      }
 
       stopPasting();
+      togglePanelLoading();
 
       resetData(file.name);
       
       return parseScript(text, file.name);
     } catch (err) {
-      console.error(err);
+      if (!text) util.showDialog("An error occurred while loading the script file.<br>" + err.message, "Error");
     }
   }
 }
@@ -79,21 +89,33 @@ function parseScript(script, fileName) {
       return parseTxt(script);
     } else if (fileType == "rtf") {
       return parseRtf(script);
+    } else if (fileType == "docx") {
+      return parseDocx(script);
     }
   } catch (err) {
-    // todo: make an error popup
     console.log(err);
+    util.showDialog(err.message, "An Error Occurred While Parsing the Script");
     return false;
   }
+}
+
+function parseDocx(script) {
+  const docx2html = require("docx2html");
+  docx2html(script).then(scriptHTML => {
+    console.log(scriptHTML);
+  }).catch(error => {
+    console.log(error)
+  });
 }
 
 function parseRtf(script) {
   // change all curly quotes to straight
   // the RTF parser doesn't handle them... TODO: fix?
-  script = script.replaceAll(/\\'9[12]/gi, "'"); // replace apostrophes
-  script = script.replaceAll(/\\'9[34]/gi, "\""); 
+  script = script.replaceAll(/\\'9[12]/gi, "'"); // replace singles
+  script = script.replaceAll(/\\'9[34]/gi, "\""); // replace doubles
+  // console.log(script);
 
-  const rtfParser = require('./libraries/rtf2html/index.js');
+  const rtfParser = require('./rtf2html/index.js');
   const scriptHTML = rtfParser(script);
 
   return parseTxt(scriptHTML);
@@ -108,6 +130,9 @@ function parseTxt(script) {
   
   lines.forEach( line => {
     if (line.length < 1 || line.toLowerCase().startsWith("page")) return;
+
+    // remove newlines
+    line = line.replaceAll(/(\r\n|\n|\r)/gm, "");
 
     let lineData = line.split('\t'),
       panelNum = parseFloat(lineData[0]) || lastPanelNum,
@@ -132,6 +157,7 @@ function parseTxt(script) {
     parsedScript[pageNum] = pageData;
   })
 
+  console.log(parsedScript);
   return [parsedScript, columnsCount];
 }
 
@@ -221,6 +247,7 @@ function setupTable(parsedScript, columnsCount) {
     Object.entries(parsedScript).forEach( (page, pageIndex) => {
       let pageNum = page[0],
           pageData = page[1],
+          rowIndex = 0,
           thisPage = templatePage.cloneNode(true);
 
       thisPage.removeChild(thisPage.querySelector(".table_page_panel"));
@@ -242,6 +269,7 @@ function setupTable(parsedScript, columnsCount) {
                 cellId = `${pageIndex}-${panelIndex}-${lineIndex}-${cellIndex}`;
             thisCell.innerHTML = cell;
             thisCell.setAttribute("cell-id", cellId);
+            thisCell.setAttribute("row-id", rowIndex);
             thisCell.setAttribute("column-id", cellIndex);
             thisLine.appendChild(thisCell);
             thisCell.onclick = changeSelection;
@@ -250,6 +278,7 @@ function setupTable(parsedScript, columnsCount) {
             currentScript[cellId] = cell;
           }) // forEach cell
 
+          if (line.length > 0) rowIndex++; // increment row index
           thisPanel.appendChild(thisLine);
         }); // forEach line
 
@@ -263,7 +292,25 @@ function setupTable(parsedScript, columnsCount) {
     tableWrapper.style.display = "";
     controls.style.display = "";
 
+    togglePanelLoading();
+
   } catch(e) { console.log(e) }
+}
+
+function togglePanelLoading(isLoading) {
+  let panel = document.getElementById("typeset_tool"),
+      overlay = panel.querySelector(".overlay.loading");
+
+  if (isLoading !== undefined) {
+    // if given a value, use that
+    isLoading ? panel.classList.add("loading") : panel.classList.remove("loading");
+
+  } else {
+    // otherwise just toggle, return value is whether or not the class was added 
+    isLoading = panel.classList.toggle("loading"); 
+  }
+
+  overlay.style.display = isLoading ? "" : "none";
 }
 
 var isPasting = false,
@@ -330,9 +377,9 @@ function setSelection(cell){
   selection.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
 }
 
-function goToCell(data) {
-  const cellId = data.join("-");
-  const newSelection = document.querySelector("#typeset_tool .table_body").querySelector(`.table_cell[cell-id="${cellId}"]`);
+function goToCell(colId, rowId) {
+  const query = `.table_cell[column-id="${colId}"][row-id="${rowId}"]`,
+    newSelection = document.querySelector("#typeset_tool .table_body").querySelector(query);
   setSelection(newSelection);
   
   return newSelection;
@@ -360,32 +407,19 @@ function selectionChanged() {
 function pasteText() {
   if (!currentScript || !selection) return;
   const doc = app.activeDocument,
-     cellId = selection.getAttribute("cell-id");
+    cellId = selection.getAttribute("cell-id"),
+    colId = selection.getAttribute("column-id"),
+    rowId = selection.getAttribute("row-id");
 
-  const textToPlace = currentScript[cellId];
+  let textToPlace = currentScript[cellId];
+  // textToPlace = decodeURI(textToPlace); // unescape HTML (like quotes)
 
   doc.selection[0].contents = textToPlace;
 
   // go to next line
-
-  let nextCell = cellId.split("-").map( n => parseInt(n) );
-  nextCell[2] += 1; // add one to the line index;
-
-  let result = goToCell(nextCell);
-  // got to the end of the panel
-  if (!result) {
-    nextCell[2] = 0; // reset the line index
-    nextCell[1] += 1; // add one to the panel index
-    result = goToCell(nextCell);
-  }
-  // got to the end of the page
-  if (!result) {
-    nextCell[1] = 0; // reset the panel index
-    nextCell[0] += 1; // add one to the page index
-    result = goToCell(nextCell);
-  }
-  // got to the end of the document, stop pasting
-  if (!result) { stopPasting() }
+  const newRowId = parseInt(rowId) + 1;
+  const newSelection = goToCell(colId, newRowId);
+  if (!newSelection) { stopPasting() } // end of file
 }
 
 
@@ -398,7 +432,6 @@ function setupButtons() {
   panel.querySelector(".control_wrapper .stop").onclick = stopPasting;
 
   app.activeDocument.addEventListener('afterSelectionChanged', selectionChanged);
-  
 }
 
 module.exports = { 

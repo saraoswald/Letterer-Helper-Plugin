@@ -292,7 +292,6 @@ function GetRtfTk(s, i)
                 // unicode character
                 // the pattern is \uXXX
                 //   where XXX is the unicode code
-                // TODO: this still allows the code to appear after the character?? e.g. ♡9825 
                 if (len == 2 && (s.charCodeAt(originalIndex + 1) == 117)) {
                         // grab the code
                         var code = "", thisChar = c, thisIndex = originalIndex + 2;
@@ -1106,7 +1105,7 @@ function RtfParser(text, strict, nohandle)
 
                                 // token MUST be control word
                                 if (6 !== typ)
-                                        throw Error("RtfParser: No control after open brace!");
+                                        throw Error("RtfParser: No control after open brace! Position: " + this.pos);
 
                                 // create new stack frame with stuff we know about (handlers
                                 // should be careful about using ANY three-character var name)
@@ -1133,9 +1132,9 @@ function RtfParser(text, strict, nohandle)
                                 if (null == nfr._dh)
                                 {
                                         // unrecognized, non-ignorable destination
-                                        if (true !== ign)
-                                                throw Error("RtfParser: Unhandled Destination \"" +
-                                                        nfr.ctl + "\" (" + nfr.pth + ")");
+                                        // if (true !== ign)
+                                        //         throw Error("RtfParser: Unhandled Destination \"" +
+                                        //                 nfr.ctl + "\" (" + nfr.pth + ")");
 
                                         // ignore destination by skipping its block
                                         this.pos = RtfSkipB(this.txt, this.pos);

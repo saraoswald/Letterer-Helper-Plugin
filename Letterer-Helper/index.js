@@ -1,5 +1,10 @@
+// UXP libraries have to be loaded here
 const { entrypoints } = require("uxp");
 const { app } = require("indesign");
+const ID = require("indesign");
+const fsProvider = require('uxp').storage.localFileSystem;
+const formats = require('uxp').storage.formats
+// const { domains } = require('uxp').storage;
 
 entrypoints.setup({
   panels: {

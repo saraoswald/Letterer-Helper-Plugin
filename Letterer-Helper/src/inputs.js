@@ -2,7 +2,6 @@
     REM: `document` is the plugin
          `app.activeDocument` is the InDesign document that's currently active
 */
-const ID = require("indesign");
 const scripts = require('./scripts');
 
 function handleClickBindingDirection(e) {
