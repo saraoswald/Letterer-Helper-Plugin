@@ -1,14 +1,14 @@
 {
   "name": "letterer-helper-plugin",
   "version": "1.0.0",
-  "description": "Default template for creating Adobe UXP based InDesign plugin.",
+  "description": "Lettering tools for InDesign.",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git@git.corp.adobe.com:torq/uxp-developer-tools.git",
-    "directory": "packages/uxp-templates-pack"
+    "url": "git@github.com:saraoswald/Letterer-Helper-Plugin.git",
+    "directory": "Letterer-Helper"
   },
-  "author": "Adobe Inc",
+  "author": "Sara Linsley",
   "license": "Apache-2.0",
   "files": [
     "template.json",
@@ -24,6 +24,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --watch --mode=development",
     "build": "webpack"
   }
 }
