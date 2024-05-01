@@ -1,6 +1,6 @@
 {
   "id": "Letterer-Helper",
-  "name": "Letterer Helper",
+  "name": "Manga Letterer Helper",
   "version": "1.0.0",
   "main": "index.html",
   "requiredPermissions": {
@@ -37,7 +37,7 @@
         "height": 300
       },
       "label": {
-        "default": "Letterer Helper"
+        "default": "Manga Scripts"
       },
       "icons": [
         {
@@ -124,9 +124,9 @@
   ],
   "icons": [
     {
-      "width": 48,
-      "height": 48,
-      "path": "icons/plugin.png",
+      "width": 23,
+      "height": 23,
+      "path": "icons/dark.png",
       "scale": [
         1,
         2
@@ -134,13 +134,20 @@
       "theme": [
         "darkest",
         "dark",
-        "medium",
-        "lightest",
-        "light",
-        "all"
+        "medium"
+      ]
+    },
+    {
+      "width": 23,
+      "height": 23,
+      "path": "icons/light.png",
+      "scale": [
+        1,
+        2
       ],
-      "species": [
-        "pluginList"
+      "theme": [
+        "lightest",
+        "light"
       ]
     }
   ]
