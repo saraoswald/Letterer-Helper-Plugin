@@ -41,7 +41,10 @@ async function getText() {
 
     try {
       const file = await fsProvider.getFileForOpening({ types: [ "txt", "rtf" ] });
-      if (!file) { return false; } // no file selected
+      if (!file) { 
+        togglePanelLoading();
+        return false;
+      } // no file selected
 
       let text;
       try {
@@ -58,6 +61,7 @@ async function getText() {
       
       return parseScript(text, file.name);
     } catch (err) {
+      console.log(err);
       if (!text) util.showDialog("An error occurred while loading the script file.<br>" + err.message, "Error");
     }
   }
@@ -383,10 +387,9 @@ function loadScript() {
   textPromise.then((data) => { 
     if (!data) { // no file selected, or there was an issue with the file
       togglePanelLoading();
-      return;
+    } else {
+      setupTable(...data);
     }
-
-    setupTable(...data);
   });
 }
 
