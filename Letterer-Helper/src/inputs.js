@@ -12,7 +12,7 @@ function handleClickBindingDirection(e) {
 }
 
 function setupBindingDirection() {
-  if (!app.activeDocument) { return }
+  if (app.documents.length < 1) { return }
   const currentBinding = app.activeDocument.documentPreferences.pageBinding;
 
   // Not sure when this is used, but it's possible
@@ -47,7 +47,7 @@ function setupClickBindings(){
 }
 
 function main(){
-  if (!app || !app.activeDocument) { return }
+  if (!app) { return }
 
   setupFields();
   setupClickBindings();
