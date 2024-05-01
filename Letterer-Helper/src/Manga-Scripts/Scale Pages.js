@@ -240,7 +240,7 @@ const main = function(){
     try {
         myDisplayDialog();
     } catch (error) {
-        console.log(error);
+        util.showDialog(error, "Error");
     }
 }
 
