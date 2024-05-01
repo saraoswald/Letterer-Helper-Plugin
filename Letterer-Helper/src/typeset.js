@@ -1,6 +1,6 @@
 const localStorage = window.localStorage;
 // const sessionStorage = window.sessionStorage;
-
+const util = require('./utility');
 
 function fetchData(key) {
   let data = localStorage.getItem(currentFile); // string
@@ -92,8 +92,8 @@ function parseScript(script, fileName) {
       return parseRtf(script);
     }
   } catch (err) {
-    console.log(err);
     util.showDialog(err.message, "An Error Occurred While Parsing the Script");
+    console.log(err);
     return false;
   }
 }
@@ -381,7 +381,10 @@ function loadScript() {
   const textPromise = getText();
 
   textPromise.then((data) => { 
-    if (!data) return; // no file selected
+    if (!data) { // no file selected, or there was an issue with the file
+      togglePanelLoading();
+      return;
+    }
 
     setupTable(...data);
   });
