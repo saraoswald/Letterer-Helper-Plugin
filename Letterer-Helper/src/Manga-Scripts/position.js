@@ -101,7 +101,7 @@ function myDisplayDialog() {
         var regex = /\d{3,4}(?=\_?\d?\d?[a-zA-Z]?\.[A-Za-z]{3,4})/;
 
         if (selectedPageRange === 0 && pageRange.length === 0) {
-            console.log('Please enter a valid page range (e.g. "12, 32-33")');
+            util.showDialog('Please enter a valid page range (e.g. "12, 32-33")', 'Error');
             needsReview = true;
         }
 
@@ -117,7 +117,12 @@ function myDisplayDialog() {
                 var page = pageRange[i];
                 transformPage(page, parseInt(page.name) % 2 > 0 ? oddPages : evenPages);
             }
-        } catch (err) { console.log(err) }
+        } catch (err) { 
+            for (var i = 0; i < pageRange.count(); i++) {
+                var page = pageRange.item(i);
+                transformPage(page, parseInt(page.name) % 2 > 0 ? oddPages : evenPages);
+            }
+         }
 
         if (!needsReview) {
             myDialog.destroy();
