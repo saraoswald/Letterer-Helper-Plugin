@@ -11,7 +11,7 @@ function updateProgressBar(progress) {
 }
 
 const showDialog = function(message, title) {
-    const dialog = document.getElementById("dialog");
+    const dialog = document.querySelector("dialog");
   
     dialog.querySelector(".title").innerHTML = title || "";
     dialog.querySelector(".message").innerHTML = message || "";

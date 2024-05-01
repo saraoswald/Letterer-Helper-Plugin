@@ -21,8 +21,6 @@
 dialog > div {
   display: flex;
   flex-direction: column;
-  height: 300px;
-  width: 400px;
 }
 dialog > div > p {
   margin-top: 30px;

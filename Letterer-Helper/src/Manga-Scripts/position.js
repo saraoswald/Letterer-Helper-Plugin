@@ -22,6 +22,8 @@
 
 // const progressBar = require('./progress_bar.js');
 
+const util = require('../utility');
+
 // Feel free to change the default values
 var defaults = {
     oddPages: {
@@ -209,7 +211,7 @@ const main = function(){
         app.scriptPreferences.measurementUnit = ID.MeasurementUnits.POINTS;
 
         if (app.activeDocument.allGraphics.length === 0) {
-            console.log('Could not find any linked graphics in this document.');
+            util.showDialog("Could not find any linked graphics in this document.");
         } else if (app.documents.length != 0) {
             myDisplayDialog();
         }
