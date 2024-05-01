@@ -25,6 +25,7 @@
         - This script ignores page binding settings. Page 1 to the script is Page 1 to InDesign. 
 */
 
+const util = require('../utility');
 const progressBar = require('./progress_bar.js');
 
 function myDisplayDialog() {
@@ -63,7 +64,7 @@ function myDisplayDialog() {
         var pageRange = selectedPageRange === 0 ? getValidRange(pageRangeInput.editContents) : app.activeDocument.pages;
 
         if (selectedPageRange === 0 && pageRange.length === 0) {
-            alert('Please enter a valid page range (e.g. "12, 32-33")');
+            util.showDialog('Please enter a valid page range (e.g. "12, 32-33")');
             needsReview = true;
         }
 
@@ -198,8 +199,13 @@ function resizePages(scaleFactor, pageRange) {
         // this is intended for base art frames
         needsToBeFitted.forEach(function(f) { return f.geometricBounds = getPageBleed(page) });
     }
-    
-    progressBar.start(pageRange.count());
+    var arrLength;
+    try {
+        arrLength = pageRange.count();
+    } catch (error) {
+        arrLength = pageRange.length;
+    }
+    progressBar.start(arrLength);
     forEach(pageRange, resizePage);
     progressBar.hide();
 }
@@ -218,8 +224,14 @@ function filter(arr, filterFn) {
 
 // basically Array.forEach
 const forEach = function(arr, fn) {
-    for (var i = 0; i < arr.count(); i++) {
-        fn(arr.item(i), i);
+    try {
+        for (var i = 0; i < arr.count(); i++) {
+            fn(arr.item(i), i);
+        }
+    } catch (error) {
+        for (var i = 0; i < arr.length; i++) {
+            fn(arr[i], i);
+        }
     }
 }
 
