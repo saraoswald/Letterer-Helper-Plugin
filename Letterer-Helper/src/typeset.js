@@ -40,7 +40,7 @@ async function getText() {
   if (fsProvider.isFileSystemProvider) {
 
     try {
-      const file = await fsProvider.getFileForOpening({ types: [ "txt", "rtf", "docx" ] });
+      const file = await fsProvider.getFileForOpening({ types: [ "txt", "rtf" ] });
       if (!file) { return false; } // no file selected
 
       let text;
@@ -90,35 +90,12 @@ function parseScript(script, fileName) {
       return parseTxt(script);
     } else if (fileType == "rtf") {
       return parseRtf(script);
-    } else if (fileType == "docx") {
-      return parseDocx(script);
     }
   } catch (err) {
     console.log(err);
     util.showDialog(err.message, "An Error Occurred While Parsing the Script");
     return false;
   }
-}
-
-function parseDocx(script) {
-  const docx2html = require("docx2html");
-  docx2html(script).then(scriptHTML => {
-    const panel = document.getElementById("typeset_tool"),
-      overlay = panel.querySelector('.overlay'),
-      controls = panel.querySelector('.control_wrapper'),
-      tableWrapper = panel.querySelector(".table_wrapper");
-      
-    tableWrapper.innerHTML = scriptHTML.toString();
-
-    overlay.style.display = "none";
-    tableWrapper.style.display = "";
-    controls.style.display = "";
-
-    togglePanelLoading();
-
-  }).catch(error => {
-    console.log(error)
-  });
 }
 
 function parseRtf(script) {
