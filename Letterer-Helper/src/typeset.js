@@ -444,7 +444,9 @@ function setupButtons() {
   panel.querySelector(".control_wrapper .start").onclick = startPasting;
   panel.querySelector(".control_wrapper .stop").onclick = stopPasting;
 
-  app.activeDocument.addEventListener('afterSelectionChanged', selectionChanged);
+  if (app.documents.length > 0) {
+    app.activeDocument.addEventListener('afterSelectionChanged', selectionChanged);
+  }
 }
 
 module.exports = { 

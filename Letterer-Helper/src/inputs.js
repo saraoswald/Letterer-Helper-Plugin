@@ -46,13 +46,30 @@ function setupClickBindings(){
   scripts.typeset.setupButtons();
 }
 
-function main(){
+function handleChangeContext(evt) {
+  // check that the event is done
+  if (evt.eventPhase.toString() !== "DONE") return;
+  // check that the panel isn't still loading (prevents multiple calls at the same time)
+  if (panel.classList.contains("loading")) return;
+  // check that a document is open
+  if (app.documents.count() < 1 || !app.activeDocument) return;
+  // check that the document name has changed 
+  if (currentDocument != "" && app.activeDocument.name == currentDocument) return;
+
+  setupFields();
+  setupClickBindings();
+}
+
+function initPlugin(){
   if (!app) { return }
 
   setupFields();
   setupClickBindings();
 
+  app.addEventListener("afterContextChanged", handleChangeContext);
   // TODO: stop pasting on close
 }
 
-main();
+(function() {
+  initPlugin();
+})();
