@@ -44,6 +44,7 @@ function setupClickBindings(){
   document.getElementById("pseudo-stroke").onclick = scripts.pseudoStroke;
 
   scripts.typeset.setupButtons();
+  scripts.typeset.setupKeyboardShortcuts();
 }
 
 function handleChangeContext(evt) {

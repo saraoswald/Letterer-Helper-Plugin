@@ -442,6 +442,24 @@ function setupButtons() {
   }
 }
 
+function handlePressNextRow(evt) {
+  if (!isPasting) return; 
+
+  goToNextCell();
+}
+
+function setupKeyboardShortcuts() {
+  var nextRowMenuItem = app.scriptMenuActions.item("Manga Helper - Go to Next Row");
+  if (!nextRowMenuItem.isValid) {
+    nextRowMenuItem = app.scriptMenuActions.add("Manga Helper - Go to Next Row");
+  }
+  
+  // nextRowMenuItem.addEventListener("afterInvoke", goToNextCell);
+  nextRowMenuItem.removeEventListener("afterInvoke", handlePressNextRow);
+  nextRowMenuItem.addEventListener("afterInvoke", handlePressNextRow);
+}
+
 module.exports = { 
-  setupButtons
+  setupButtons,
+  setupKeyboardShortcuts
 }
