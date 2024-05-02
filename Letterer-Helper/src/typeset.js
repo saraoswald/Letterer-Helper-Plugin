@@ -261,10 +261,11 @@ function setupTable(parsedScript, columnsCount) {
           line.forEach( (cell, cellIndex) => {
             let thisCell = templateCell.cloneNode(true),
                 cellId = `${pageIndex}-${panelIndex}-${lineIndex}-${cellIndex}`;
-            thisCell.innerHTML = cell;
+            thisCell.setAttribute("page-id", pageIndex);
             thisCell.setAttribute("cell-id", cellId);
             thisCell.setAttribute("row-id", rowIndex);
             thisCell.setAttribute("column-id", cellIndex);
+            thisCell.innerHTML = cell;
             thisLine.appendChild(thisCell);
             thisCell.onclick = changeSelection;
 
@@ -371,9 +372,21 @@ function setSelection(cell){
   selection.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
 }
 
-function goToCell(colId, rowId) {
-  const query = `.table_cell[column-id="${colId}"][row-id="${rowId}"]`,
+function goToNextCell() {
+  const pageId = selection.getAttribute("page-id"),
+    colId = selection.getAttribute("column-id"),
+    rowId = selection.getAttribute("row-id");
+  
+  // try going to the next row
+  let query = `.table_cell[page-id="${pageId}"][column-id="${colId}"][row-id="${parseInt(rowId) + 1}"]`,
     newSelection = document.querySelector("#typeset_tool .table_body").querySelector(query);
+  
+  // if empty, go to next page in the same column
+  if (!newSelection) {
+    query = `.table_cell[page-id="${parseInt(pageId) + 1}"][column-id="${colId}"][row-id="0"]`;
+    newSelection = document.querySelector("#typeset_tool .table_body").querySelector(query);
+  }
+  
   setSelection(newSelection);
   
   return newSelection;
@@ -403,9 +416,7 @@ function selectionChanged() {
 function pasteText() {
   if (!currentScript || !selection) return;
   const doc = app.activeDocument,
-    cellId = selection.getAttribute("cell-id"),
-    colId = selection.getAttribute("column-id"),
-    rowId = selection.getAttribute("row-id");
+    cellId = selection.getAttribute("cell-id");
 
   let textToPlace = currentScript[cellId];
   // textToPlace = decodeURI(textToPlace); // unescape HTML (like quotes)
@@ -413,8 +424,7 @@ function pasteText() {
   doc.selection[0].contents = textToPlace;
 
   // go to next line
-  const newRowId = parseInt(rowId) + 1;
-  const newSelection = goToCell(colId, newRowId);
+  const newSelection = goToNextCell(selection);
   if (!newSelection) { stopPasting() } // end of file
 }
 
