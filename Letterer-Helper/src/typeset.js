@@ -413,15 +413,58 @@ function selectionChanged() {
   }
 }
 
+function applyTextStyles(textFrame, modifierStart, modifierEnd, characterStyle) {
+  var characters = textFrame.characters;
+  var testString, start, end;
+
+  for (i = 0; i < characters.count() - modifierEnd.length; i++) {
+    start = undefined;
+    testString = characters.itemByRange(i, i + modifierStart.length - 1).contents.join("").toLowerCase();
+    if (testString == modifierStart) {
+      start = i + modifierStart.length;
+      end = undefined;
+      
+      for (j = start; end == undefined && j < characters.count() - modifierEnd.length + 1; j++) {
+        testString = characters.itemByRange(j, j + modifierEnd.length - 1).contents.join("").toLowerCase();
+        if (end == undefined && testString == modifierEnd) {
+          end = j - 1;
+        }
+      }
+
+      // tag that has no closer
+      if (start != undefined && end == undefined) {
+        end = characters.count() - 1;
+      }
+
+      if (start != undefined && end != undefined) {
+        characters.itemByRange(start, end).applyCharacterStyle(characterStyle);
+      }
+    }
+  }
+}
+
 function pasteText() {
   if (!currentScript || !selection) return;
   const doc = app.activeDocument,
     cellId = selection.getAttribute("cell-id");
 
   let textToPlace = currentScript[cellId];
+  let textFrame = doc.selection[0];
   // textToPlace = decodeURI(textToPlace); // unescape HTML (like quotes)
 
-  doc.selection[0].contents = textToPlace;
+  textFrame.contents = textToPlace;
+
+  // TODO: give the user the option to turn this off
+
+  // Check to see if the Character Style already exists
+  var existingStyle = doc.characterStyles.itemByName("Bold");
+  var characterStyle = existingStyle.isValid ?
+      existingStyle :
+      doc.characterStyles.add({
+        name: 'Bold',
+        fontStyle: "Bold",
+      });
+  applyTextStyles(textFrame, "<b>", "</b>", characterStyle);
 
   // go to next line
   const newSelection = goToNextCell(selection);
