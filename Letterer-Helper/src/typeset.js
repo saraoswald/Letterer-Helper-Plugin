@@ -414,6 +414,8 @@ function selectionChanged() {
 }
 
 function applyTextStyles(textFrame, modifierStart, modifierEnd, characterStyle) {
+  // todo: this is slow
+  // todo: this doesn't work on overset frames
   var characters = textFrame.characters;
   var testString, start, end;
 
@@ -438,6 +440,8 @@ function applyTextStyles(textFrame, modifierStart, modifierEnd, characterStyle) 
 
       if (start != undefined && end != undefined) {
         characters.itemByRange(start, end).applyCharacterStyle(characterStyle);
+        characters.itemByRange(end + 1, end + modifierEnd.length).remove();
+        characters.itemByRange(i, start - 1).remove();
       }
     }
   }
