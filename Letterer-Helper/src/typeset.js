@@ -2,6 +2,26 @@ const localStorage = window.localStorage;
 // const sessionStorage = window.sessionStorage;
 const util = require('./utility');
 
+const debugMode = false;
+
+const defaultCharacterStyleBold = {
+  name: "Bold",
+  fontStyle: "Bold",
+};
+const defaultCharacterStyleItalic = {
+  name: "Italic",
+  fontStyle: "Italic",
+}
+const defaultCharacterStyleBoldItalic = {
+  name: "Bold Italic",
+  fontStyle: "Bold Italic",
+}
+
+let characterStyleBold = undefined,
+  characterStyleItalic = undefined,
+  characterStyleBoldItalic = undefined;
+
+
 function fetchData(key) {
   let data = localStorage.getItem(currentFile); // string
   if (!data) return;
@@ -265,7 +285,7 @@ function setupTable(parsedScript, columnsCount) {
             thisCell.setAttribute("cell-id", cellId);
             thisCell.setAttribute("row-id", rowIndex);
             thisCell.setAttribute("column-id", cellIndex);
-            thisCell.innerHTML = cell;
+            thisCell.innerHTML = cell + (!debugMode ? "" :  " [" + [pageIndex, cellIndex, rowIndex].join(", ") + "]");
             thisLine.appendChild(thisCell);
             thisCell.onclick = changeSelection;
 
@@ -380,13 +400,25 @@ function goToNextCell() {
   // try going to the next row
   let query = `.table_cell[page-id="${pageId}"][column-id="${colId}"][row-id="${parseInt(rowId) + 1}"]`,
     newSelection = document.querySelector("#typeset_tool .table_body").querySelector(query);
+
+  // if empty, try the next next row
+  if (!newSelection) {
+    query = `.table_cell[page-id="${pageId}"][column-id="${colId}"][row-id="${parseInt(rowId) + 2}"]`;
+    newSelection = document.querySelector("#typeset_tool .table_body").querySelector(query);
+  }
   
   // if empty, go to next page in the same column
   if (!newSelection) {
     query = `.table_cell[page-id="${parseInt(pageId) + 1}"][column-id="${colId}"][row-id="0"]`;
     newSelection = document.querySelector("#typeset_tool .table_body").querySelector(query);
   }
-  
+
+  // if STILL empty, try the second row in the next page
+  if (!newSelection) {
+    query = `.table_cell[page-id="${parseInt(pageId) + 1}"][column-id="${colId}"][row-id="1"]`;
+    newSelection = document.querySelector("#typeset_tool .table_body").querySelector(query);
+  }
+    
   setSelection(newSelection);
   
   return newSelection;
@@ -413,7 +445,33 @@ function selectionChanged() {
   }
 }
 
-function applyTextStyles(textFrame, modifierStart, modifierEnd, characterStyle) {
+function applyTextStyles(textFrame) {
+  // Check to see if the Character Style already exists
+  if (!characterStyleBold) {
+    var existingStyleBold = doc.characterStyles.itemByName(defaultCharacterStyleBold.name);
+    characterStyleBold = existingStyleBold.isValid ?
+        existingStyleBold :
+        doc.characterStyles.add(defaultCharacterStyleBold);
+  }
+  if (!characterStyleItalic) {
+    var existingStyleItalic = doc.characterStyles.itemByName(defaultCharacterStyleItalic.name);
+    characterStyleItalic = existingStyleItalic.isValid ?
+        existingStyleItalic :
+        doc.characterStyles.add(defaultCharacterStyleItalic);
+  }
+  if (!characterStyleBoldItalic) {
+    var existingStyleBoldItalic = doc.characterStyles.itemByName(defaultCharacterStyleBoldItalic.name);
+    characterStyleBoldItalic = existingStyleBoldItalic.isValid ?
+        existingStyleBoldItalic:
+        doc.characterStyles.add(defaultCharacterStyleBoldItalic);
+  }
+  
+  doApplyTextStyles(textFrame, "<b>", "</b>", characterStyleBold);
+  doApplyTextStyles(textFrame, "<i>", "</i>", characterStyleItalic);
+}
+
+
+function doApplyTextStyles(textFrame, modifierStart, modifierEnd, characterStyle) {
   // todo: this is slow
   // todo: this doesn't work on overset frames
   var characters = textFrame.characters;
@@ -439,7 +497,15 @@ function applyTextStyles(textFrame, modifierStart, modifierEnd, characterStyle) 
       }
 
       if (start != undefined && end != undefined) {
-        characters.itemByRange(start, end).applyCharacterStyle(characterStyle);
+        let charactersToModify = characters.itemByRange(start, end);
+        // apply character style
+        if (characterStyle.name == characterStyleItalic.name && charactersToModify.appliedCharacterStyle[0].name == characterStyleBold.name) {
+          characterStyle = characterStyleBoldItalic;
+        }
+
+        charactersToModify.applyCharacterStyle(characterStyle);
+
+        // remove tags
         characters.itemByRange(end + 1, end + modifierEnd.length).remove();
         characters.itemByRange(i, start - 1).remove();
       }
@@ -459,16 +525,7 @@ function pasteText() {
   textFrame.contents = textToPlace;
 
   // TODO: give the user the option to turn this off
-
-  // Check to see if the Character Style already exists
-  var existingStyle = doc.characterStyles.itemByName("Bold");
-  var characterStyle = existingStyle.isValid ?
-      existingStyle :
-      doc.characterStyles.add({
-        name: 'Bold',
-        fontStyle: "Bold",
-      });
-  applyTextStyles(textFrame, "<b>", "</b>", characterStyle);
+  applyTextStyles(textFrame);
 
   // go to next line
   const newSelection = goToNextCell(selection);
