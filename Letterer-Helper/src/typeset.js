@@ -446,6 +446,7 @@ function selectionChanged() {
 }
 
 function applyTextStyles(textFrame) {
+  const doc = app.activeDocument;
   // Check to see if the Character Style already exists
   if (!characterStyleBold) {
     var existingStyleBold = doc.characterStyles.itemByName(defaultCharacterStyleBold.name);
@@ -497,13 +498,30 @@ function doApplyTextStyles(textFrame, modifierStart, modifierEnd, characterStyle
       }
 
       if (start != undefined && end != undefined) {
-        let charactersToModify = characters.itemByRange(start, end);
-        // apply character style
-        if (characterStyle.name == characterStyleItalic.name && charactersToModify.appliedCharacterStyle[0].name == characterStyleBold.name) {
-          characterStyle = characterStyleBoldItalic;
-        }
+        let boldItalicList = [];
+        // apply Bold Italic if some text is already bold and we're adding italic
+        if (characterStyle.name == characterStyleItalic.name) {
+          let boldItalStart = undefined;
+          // check for bold italic styling, put boldital blocks in an array
+          for(let k = start; k <= end; k++) {
+            let char = characters.item(k);
+            if (!boldItalStart && char.appliedCharacterStyle.name == characterStyleBold.name) {
+              boldItalStart = k;
+            } else if(!!boldItalStart && char.appliedCharacterStyle.name != characterStyleBold.name) { 
+              boldItalicList.push([boldItalStart, k]);
+              boldItalStart = undefined;
+            } else if (!!boldItalStart && k == end) {
+              boldItalicList.push([boldItalStart, k]);
+            }
+          }
 
-        charactersToModify.applyCharacterStyle(characterStyle);
+          console.log(boldItalicList);
+        }
+        characters.itemByRange(start, end).applyCharacterStyle(characterStyle);
+        // assign boldital style 
+        boldItalicList.forEach((pair) => {
+          characters.itemByRange(...pair).applyCharacterStyle(characterStyleBoldItalic);
+        })
 
         // remove tags
         characters.itemByRange(end + 1, end + modifierEnd.length).remove();
