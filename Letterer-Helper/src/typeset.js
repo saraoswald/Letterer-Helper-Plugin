@@ -69,6 +69,9 @@ function toggleSettings() {
   panel.classList.toggle("settings_open"); 
   
   overlay.style.display = isOpen ? "none" : "";
+
+  // scroll the selection back into view on close
+  if (isOpen) selection.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
 }
 
 // apply previous settings to the UI
@@ -357,6 +360,7 @@ function setupTable(parsedScript, columnsCount) {
     overlay.style.display = "none";
     tableWrapper.style.display = "";
     controls.style.display = "";
+    controls.classList.remove("closed");
 
     togglePanelLoading();
 
@@ -656,6 +660,7 @@ function setupButtons() {
   panel.querySelector(".control_wrapper .start").onclick = startPasting;
   panel.querySelector(".control_wrapper .stop").onclick = stopPasting;
   panel.querySelectorAll(".toggle_settings").forEach(btn => btn.onclick = toggleSettings);
+  panel.querySelector(".control_wrapper_toggle").onclick = toggleControlWrapper(panel);
 
   if (app.documents.length > 0) {
     app.activeDocument.addEventListener('afterSelectionChanged', selectionChanged);
@@ -671,6 +676,13 @@ function handlePressNextRow(evt) {
   if (!isPasting) return; 
 
   goToNextCell();
+}
+
+function toggleControlWrapper(panel) {
+  return function(evt) { 
+    const controlWrapper = panel.querySelector(".control_wrapper");
+    controlWrapper.classList.toggle("closed");
+  }
 }
 
 function setupKeyboardShortcuts() {

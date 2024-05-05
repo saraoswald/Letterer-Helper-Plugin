@@ -78,11 +78,16 @@
           </sp-radio-group>
         </div>
       </div>
-      <div class="control_wrapper" style="display: none;">
+      <div class="control_wrapper closed" style="display: none;">
         <sp-button class="start">Start</sp-button>
         <sp-button class="stop" style="display: none;" variant="secondary">Pause</sp-button>
-        <sp-button class="load_script" variant="secondary">Reload Script</sp-button>
-        <sp-button class="toggle_settings" variant="secondary">Settings</sp-button>
+        <sp-button class="collapsable load_script" variant="secondary">Load Script</sp-button>
+        <sp-button class="collapsable toggle_settings" variant="secondary">Settings</sp-button>
+
+        <span class="control_wrapper_toggle">
+          <sp-icon size="xxxs" class="open" name="ui:ChevronRightMedium" title="Expand the control bar"></sp-icon>
+          <sp-icon size="xxxs" class="close" name="ui:ChevronLeftMedium" title="Collapse the control bar"></sp-icon>
+        </span>
       </div>
       <div class="table_wrapper" style="display: none;">
         <div class="table_head table_row">

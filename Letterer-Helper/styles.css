@@ -154,7 +154,6 @@ section .input {
   text-align: left;
   flex-direction: column;
 }
-
 .overlay.settings .settings_control {
   width: 100%;
   height: 4.5em;
@@ -173,8 +172,27 @@ section .input {
 }
 
 .control_wrapper {
-  padding: 1em;
-  height: 4.5em;
+  padding: 0.5em 0.25em 0.25em 0.25em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.control_wrapper sp-button {
+  margin-bottom: 0.25em;
+}
+.control_wrapper_toggle {
+  margin-top: -0.25em;
+}
+.control_wrapper_toggle sp-icon { cursor: pointer; }
+.control_wrapper.closed .control_wrapper_toggle .close {
+  display: none;
+}
+.control_wrapper:not(.closed) .control_wrapper_toggle .open {
+  display: none;
+}
+.control_wrapper.closed sp-button.collapsable {
+  display: none;
 }
 
 .table_wrapper {
