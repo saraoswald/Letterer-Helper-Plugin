@@ -21,7 +21,7 @@ let characterStyleBold = undefined,
   characterStyleItalic = undefined,
   characterStyleBoldItalic = undefined;
 
-
+// NOTE: this is specific to a given file
 function fetchData(key) {
   let data = localStorage.getItem(currentFile); // string
   if (!data) return;
@@ -31,6 +31,7 @@ function fetchData(key) {
   return data[key];
 }
 
+// NOTE: this is specific to a given file
 function setData(key, value) {
   let data = localStorage.getItem(currentFile); // string
   
@@ -79,11 +80,14 @@ function setupSettings() {
   const settingsOverlay = document.querySelector(".overlay.settings .settings_body");
   settingsList.forEach( settingID => {
     // check if setting exists
-    let settingValue = fetchData(settingID);
-      // if not, then set the data to the default
+    let settingValue = localStorage.getItem(settingID);
+    if (debugMode) console.log(settingID + " - " + settingValue);
+    
+    // if not, then set the data to the default
     if (!settingValue) {
       settingValue = settingsDefaults[settingID]
-      setData(settingID, settingValue);
+      localStorage.getItem(settingID, settingValue);
+      if (debugMode) console.log("Set to default value: " + settingValue);
     }
     // apply value to UI
     settingsOverlay.querySelector(`#${settingID}`).value = settingValue;
@@ -92,7 +96,8 @@ function setupSettings() {
 }
 
 function handleSettingChange(e) {
-  setData(e.target.id, e.target.value);
+  if (debugMode) console.log(e.target.id + " - " + e.target.value);
+  localStorage.setItem(e.target.id, e.target.value);
 }
 
 
