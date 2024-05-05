@@ -55,16 +55,51 @@ function resetDialog(){
   stopPasting();
 }
 
-function toggleSettings(){
+// ----------------------
+//    Settings Overlay
+// ----------------------
+
+function toggleSettings() {
   const panel = document.getElementById("typeset_tool"),
     overlay = panel.querySelector(".overlay.settings");
 
   const isOpen = overlay.style.display != "none";
-  
+
   panel.classList.toggle("settings_open"); 
   
   overlay.style.display = isOpen ? "none" : "";
 }
+
+// apply previous settings to the UI
+const settingsList = ["setting_paste_mode"];
+const settingsDefaults = {
+  "setting_paste_mode": "paste_rich"
+};
+function setupSettings() {
+  const settingsOverlay = document.querySelector(".overlay.settings .settings_body");
+  settingsList.forEach( settingID => {
+    // check if setting exists
+    let settingValue = fetchData(settingID);
+      // if not, then set the data to the default
+    if (!settingValue) {
+      settingValue = settingsDefaults[settingID]
+      setData(settingID, settingValue);
+    }
+    // apply value to UI
+    settingsOverlay.querySelector(`#${settingID}`).value = settingValue;
+    settingsOverlay.querySelector(`#${settingID} .${settingValue}`).checked = true;
+  })
+}
+
+function handleSettingChange(e) {
+  setData(e.target.id, e.target.value);
+}
+
+
+// ----------------------
+//  End Settings Overlay
+// ----------------------
+
 
 async function getText() {
   // Ask user to select a file
@@ -127,8 +162,8 @@ function parseScript(script, fileName) {
       return parseRtf(script);
     }
   } catch (err) {
-    util.showDialog(err.message, "An Error Occurred While Parsing the Script");
     console.log(err);
+    util.showDialog("An error occurred while parsing the script.<br>" + err.message, "Error");
     return false;
   }
 }
@@ -320,7 +355,10 @@ function setupTable(parsedScript, columnsCount) {
 
     togglePanelLoading();
 
-  } catch(e) { console.log(e) }
+  } catch(err) { 
+    console.log(err);
+    util.showDialog("An error occurred while setting up the script table.<br>" + err.message, "Error");
+  }
 }
 
 function togglePanelLoading(isLoading) {
@@ -364,7 +402,10 @@ function startPasting() {
     setSelection(thisSelection);
 
     panel.querySelector(".table_wrapper").classList.add("pasting");
-  } catch(e) { console.log(e) }
+  } catch(err) { 
+    console.log(err);
+    util.showDialog("An error occurred while starting to paste.<br>" + err.message, "Error");
+  }
 }
 
 function stopPasting() {
@@ -582,10 +623,17 @@ function pasteText() {
   let textFrame = doc.selection[0];
   // textToPlace = decodeURI(textToPlace); // unescape HTML (like quotes)
 
-  textFrame.contents = textToPlace;
 
-  // TODO: give the user the option to turn this off
-  applyTextStyles(textFrame);
+  // respect the setting for paste mode
+  if (fetchData("setting_paste_mode") == "paste_rich") {
+    // place text, then format + remove tags
+    textFrame.contents = textToPlace;
+    applyTextStyles(textFrame);
+  } else {
+    // remove html tags, then place text
+    textToPlace = textToPlace.replace(/<\/?[^>]+(>|$)/g, "");
+    textFrame.contents = textToPlace;
+  }
 
   // go to next line
   const newSelection = goToNextCell(selection);
@@ -605,6 +653,11 @@ function setupButtons() {
   if (app.documents.length > 0) {
     app.activeDocument.addEventListener('afterSelectionChanged', selectionChanged);
   }
+
+  // Settings Overlay
+  setupSettings();
+
+  document.querySelector('.settings_body #setting_paste_mode').addEventListener("change", handleSettingChange);
 }
 
 function handlePressNextRow(evt) {

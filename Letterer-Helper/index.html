@@ -68,6 +68,15 @@
           <sp-heading size="XS">Settings</sp-heading>
           <sp-button class="toggle_settings">Back</sp-button>
         </div>
+        <sp-divider></sp-divider>
+        <div class="settings_body">
+          <sp-heading size="XS">Pasting Preferences</sp-heading>
+          <sp-radio-group id="setting_paste_mode">
+            <sp-label slot="label">Pasting Mode:</sp-label>
+            <sp-radio class="paste_plain" value="paste_plain">Paste Plain Text</sp-radio>
+            <sp-radio class="paste_rich" value="paste_rich">Paste Formatted Text</sp-radio>
+          </sp-radio-group>
+        </div>
       </div>
       <div class="control_wrapper" style="display: none;">
         <sp-button class="start">Start</sp-button>

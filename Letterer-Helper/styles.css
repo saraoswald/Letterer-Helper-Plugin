@@ -152,6 +152,7 @@ section .input {
   justify-content: flex-start;
   align-items: flex-start;
   text-align: left;
+  flex-direction: column;
 }
 
 .overlay.settings .settings_control {
@@ -163,8 +164,12 @@ section .input {
   align-items: center;
   vertical-align: middle;
 }
-.overlay.settings .settings_control sp-heading {
+.overlay.settings sp-heading {
   margin-top: 0px;
+}
+.overlay.settings .settings_body {
+  padding: 1em;
+  width: 100%;
 }
 
 .control_wrapper {
