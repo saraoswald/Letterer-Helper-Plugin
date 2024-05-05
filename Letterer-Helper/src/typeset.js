@@ -427,9 +427,11 @@ function stopPasting() {
 function changeSelection(e) {
   if (!isPasting) return;
 
-  e.target.classList.remove("history-selection");
+  let target = e.target.closest(".table_cell");
 
-  setSelection(e.target);
+  target.classList.remove("history-selection");
+
+  setSelection(target);
 }
 
 function setSelection(cell){
