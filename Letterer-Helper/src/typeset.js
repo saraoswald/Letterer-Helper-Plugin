@@ -55,6 +55,17 @@ function resetDialog(){
   stopPasting();
 }
 
+function toggleSettings(){
+  const panel = document.getElementById("typeset_tool"),
+    overlay = panel.querySelector(".overlay.settings");
+
+  const isOpen = overlay.style.display != "none";
+  
+  panel.classList.toggle("settings_open"); 
+  
+  overlay.style.display = isOpen ? "none" : "";
+}
+
 async function getText() {
   // Ask user to select a file
   if (fsProvider.isFileSystemProvider) {
@@ -589,6 +600,7 @@ function setupButtons() {
   isPasting = false;
   panel.querySelector(".control_wrapper .start").onclick = startPasting;
   panel.querySelector(".control_wrapper .stop").onclick = stopPasting;
+  panel.querySelectorAll(".toggle_settings").forEach(btn => btn.onclick = toggleSettings);
 
   if (app.documents.length > 0) {
     app.activeDocument.addEventListener('afterSelectionChanged', selectionChanged);
