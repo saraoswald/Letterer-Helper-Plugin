@@ -445,6 +445,29 @@ function selectionChanged() {
   }
 }
 
+// recursive function that nudges the frame bounds out by 1
+// until the frame is no longer overset
+const doFit = function(frame) {
+  if (!!frame && !frame.overflows) return;
+  expandFrame(frame, 1);
+  doFit(frame);
+}
+
+// expands a given frame by a given unit
+const expandFrame = function(frame, by) {
+  frame.geometricBounds = transformCoords(frame.geometricBounds, [by * -1, by * -1, by, by]);
+}
+
+// applies transformations in the format [y1, x1, y2, x2]
+const transformCoords = function(src, trns) {
+    return [
+        src[0] + trns[0],
+        src[1] + trns[1],
+        src[2] + trns[2],
+        src[3] + trns[3]
+    ];
+}
+
 function applyTextStyles(textFrame) {
   const doc = app.activeDocument;
   // Check to see if the Character Style already exists
@@ -474,9 +497,19 @@ function applyTextStyles(textFrame) {
 
 function doApplyTextStyles(textFrame, modifierStart, modifierEnd, characterStyle) {
   // todo: this is slow
-  // todo: this doesn't work on overset frames
   var characters = textFrame.characters;
   var testString, start, end;
+
+  // if frame is overflowing/overset, then refit
+  // overset text isn't formattable 
+  // TODO: come up with a more elegant solution for this
+  if (textFrame.overflows) {
+    textFrame.fit(ID.FitOptions.FRAME_TO_CONTENT);
+    // if it doesn't work, expand the frame manually
+    if (textFrame.overflows) {
+      doFit(textFrame);
+    }
+  }
 
   for (i = 0; i < characters.count() - modifierEnd.length; i++) {
     start = undefined;
@@ -514,14 +547,12 @@ function doApplyTextStyles(textFrame, modifierStart, modifierEnd, characterStyle
               boldItalicList.push([boldItalStart, k]);
             }
           }
-
-          console.log(boldItalicList);
         }
         characters.itemByRange(start, end).applyCharacterStyle(characterStyle);
         // assign boldital style 
         boldItalicList.forEach((pair) => {
           characters.itemByRange(...pair).applyCharacterStyle(characterStyleBoldItalic);
-        })
+        });
 
         // remove tags
         characters.itemByRange(end + 1, end + modifierEnd.length).remove();
