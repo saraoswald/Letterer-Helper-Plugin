@@ -21,6 +21,9 @@ let characterStyleBold = undefined,
   characterStyleItalic = undefined,
   characterStyleBoldItalic = undefined;
 
+app.scriptPreferences.measurementUnit = ID.MeasurementUnits.PIXELS;
+
+
 // NOTE: this is specific to a given file
 function fetchData(key) {
   let data = localStorage.getItem(currentFile); // string
@@ -567,11 +570,7 @@ function doApplyTextStyles(textFrame, modifierStart, modifierEnd, characterStyle
   // overset text isn't formattable 
   // TODO: come up with a more elegant solution for this
   if (textFrame.overflows) {
-    textFrame.fit(ID.FitOptions.FRAME_TO_CONTENT);
-    // if it doesn't work, expand the frame manually
-    if (textFrame.overflows) {
-      doFit(textFrame);
-    }
+    doFit(textFrame);
   }
 
   for (i = 0; i < characters.count() - modifierEnd.length; i++) {
@@ -636,7 +635,7 @@ function pasteText() {
 
 
   // respect the setting for paste mode
-  if (fetchData("setting_paste_mode") == "paste_rich") {
+  if (localStorage.getItem("setting_paste_mode") == "paste_rich") {
     // place text, then format + remove tags
     textFrame.contents = textToPlace;
     applyTextStyles(textFrame);

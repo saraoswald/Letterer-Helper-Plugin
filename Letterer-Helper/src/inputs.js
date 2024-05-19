@@ -50,12 +50,12 @@ function setupClickBindings(){
 function handleChangeContext(evt) {
   // check that the event is done
   if (evt.eventPhase.toString() !== "DONE") return;
-  // check that the panel isn't still loading (prevents multiple calls at the same time)
-  if (panel && panel.classList.contains("loading")) return;
+  // // check that the panel isn't still loading (prevents multiple calls at the same time)
+  // if (panel && panel.classList.contains("loading")) return;
   // check that a document is open
   if (app.documents.count() < 1 || !app.activeDocument) return;
   // check that the document name has changed 
-  if (currentDocument != "" && app.activeDocument.name == currentDocument) return;
+  // if (currentDocument != "" && app.activeDocument.name == currentDocument) return;
 
   setupFields();
   setupClickBindings();

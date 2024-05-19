@@ -250,10 +250,6 @@ function GetRtfTk(s, i)
 
                                 var d1 = s.charCodeAt(++i);
                                 var d2 = s.charCodeAt(++i);
-                                        d2 -= 0x30;
-                                else if (d2 >= 0x41 && d2 <= 0x46)      // A-F
-                                        d2 -= 0x37;
-                                else if (d2 >= 0x61 && d2 <= 0x66)      // a-f
 
                                 if (!((d1 >= 0x30 && d1 <= 0x39)  // 0-9
                                    || (d1 >= 0x41 && d1 <= 0x46)  // A-F
