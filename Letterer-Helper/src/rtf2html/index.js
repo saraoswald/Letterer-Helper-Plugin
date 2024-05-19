@@ -250,27 +250,35 @@ function GetRtfTk(s, i)
 
                                 var d1 = s.charCodeAt(++i);
                                 var d2 = s.charCodeAt(++i);
-                                
-                                if (d1 >= 0x30 && d1 <= 0x39)           // 0-9
-                                        d1 -= 0x30;
-                                else if (d1 >= 0x41 && d1 <= 0x46)      // A-F
-                                        d1 -= 0x37;
-                                else if (d1 >= 0x61 && d1 <= 0x66)      // a-f
-                                        d1 -= 0x57;
-                                else
-                                        return 4; // invalid hex (left digit)
-
-                                if (d2 >= 0x30 && d2 <= 0x39)           // 0-9
                                         d2 -= 0x30;
                                 else if (d2 >= 0x41 && d2 <= 0x46)      // A-F
                                         d2 -= 0x37;
                                 else if (d2 >= 0x61 && d2 <= 0x66)      // a-f
-                                        d2 -= 0x57;
-                                else
-                                        return 4; // invalid hex (right digit)
 
-                                // NewRtfTk(RtfConst().CHARACTER, 4, (d1 << 4) | d2);
-                                return (1 << 31) | (d1 << 19) | (d2 << 15) | 1796;
+                                if (!((d1 >= 0x30 && d1 <= 0x39)  // 0-9
+                                   || (d1 >= 0x41 && d1 <= 0x46)  // A-F
+                                   || (d1 >= 0x61 && d1 <= 0x66)  // a-f
+                                ) || !((d2 >= 0x30 && d2 <= 0x39)  // 0-9
+                                   || (d2 >= 0x41 && d2 <= 0x46)  // A-F
+                                   || (d2 >= 0x61 && d2 <= 0x66)  // a-f
+                                ))
+                                        return 4; // invalid hex
+
+                                var hex = String.fromCharCode(d1, d2)
+
+                                // tysm: https://stackoverflow.com/a/21648161
+                                var j;
+                                var hexes = hex.match(/.{1,4}/g) || [];
+                                var code = "";
+                                        for(j = 0; j<hexes.length; j++) {
+                                                code += String.fromCharCode(parseInt(hexes[j], 16));
+                                }
+                                code = code.charCodeAt(0);
+                                if (code == 133)  code = 8230; // fix ellipsis
+                                if (code == 150)  code = 8211; // fix em-dash
+                                if (code == 151)  code = 8212; // fix en-dash
+
+                                return (1 << 31) | ((code+32768) << 15) | (0 << 11) | (7 << 8) | (2 + 2);
                         }
 
                         if
@@ -435,6 +443,11 @@ function RtfTkChr(t, s, i)
                 return null;
 
         return String.fromCharCode(((t >> 15) & 0xFFFF) - 32768);
+}
+
+function RtfTkHex(t) {
+        var str = String.fromCharCode(((t >> 15) & 0xFFFF) - 32768);
+        return str;
 }
 
 //_[RtfTkCtl()]_______________________________________________________________
@@ -1544,6 +1557,11 @@ module.exports = function(txt, baseurl, out, ver)
                 else if (5 === typ)
                 {
                         o.html.push(esc_(RtfTkChr(t, s, i)));
+                        return;
+                }
+                else if (7 === typ)
+                {
+                        o.html.push(RtfTkHex(t));
                         return;
                 }
 
