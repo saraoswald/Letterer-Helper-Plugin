@@ -48,8 +48,9 @@ function setupClickBindings(){
 }
 
 function handleChangeContext(evt) {
+  console.log("context change");
   // check that the event is done
-  if (evt.eventPhase.toString() !== "DONE") return;
+  if (evt && evt.eventPhase && evt.eventPhase.toString() !== "DONE") return;
   // // check that the panel isn't still loading (prevents multiple calls at the same time)
   // if (panel && panel.classList.contains("loading")) return;
   // check that a document is open

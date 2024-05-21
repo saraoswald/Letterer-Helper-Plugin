@@ -74,7 +74,7 @@ function toggleSettings() {
   overlay.style.display = isOpen ? "none" : "";
 
   // scroll the selection back into view on close
-  if (isOpen) selection.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+  if (isOpen && !!selection) selection.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
 }
 
 // apply previous settings to the UI
@@ -568,9 +568,8 @@ function doApplyTextStyles(textFrame, modifierStart, modifierEnd, characterStyle
   var testString, start, end;
 
   // if frame is overflowing/overset, then refit
-  // overset text isn't formattable 
-  // TODO: come up with a more elegant solution for this
-  if (textFrame.overflows) {
+  // overset text isn't formattable
+  if (textFrame.overflows && (localStorage.getItem("setting_fit_overset_frames") != "only_rich_text" || textFrame.contents.match(/<.+>/))) {
     doFit(textFrame);
   }
 
@@ -659,13 +658,19 @@ function setupButtons() {
   let panel = document.getElementById("typeset_tool");
   panel.querySelectorAll(".load_script").forEach(btn => btn.onclick = loadScript);
 
-  isPasting = false;
+  stopPasting();
+
+  characterStyleBold = undefined,
+  characterStyleItalic = undefined,
+  characterStyleBoldItalic = undefined;
+
   panel.querySelector(".control_wrapper .start").onclick = startPasting;
   panel.querySelector(".control_wrapper .stop").onclick = stopPasting;
   panel.querySelectorAll(".toggle_settings").forEach(btn => btn.onclick = toggleSettings);
   panel.querySelector(".control_wrapper_toggle").onclick = toggleControlWrapper(panel);
 
   if (app.documents.length > 0) {
+    app.activeDocument.removeEventListener('afterSelectionChanged', selectionChanged);
     app.activeDocument.addEventListener('afterSelectionChanged', selectionChanged);
   }
 
