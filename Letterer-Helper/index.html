@@ -71,10 +71,15 @@
         <sp-divider></sp-divider>
         <div class="settings_body">
           <sp-heading size="XS">Pasting Preferences</sp-heading>
-          <sp-radio-group id="setting_paste_mode">
+          <sp-radio-group class="setting_persist" id="setting_paste_mode">
             <sp-label slot="label">Pasting Mode:</sp-label>
             <sp-radio class="paste_plain" value="paste_plain">Paste Plain Text</sp-radio>
             <sp-radio class="paste_rich" value="paste_rich">Paste Formatted Text</sp-radio>
+          </sp-radio-group>
+          <sp-radio-group class="setting_persist" id="setting_fit_overset_frames">
+            <sp-label slot="label">Refit Overset Text Frames:</sp-label>
+            <sp-radio class="always" value="always">Always Refit Frames</sp-radio>
+            <sp-radio class="only_rich_text" value="only_rich_text">Only Refit Rich Text</sp-radio>
           </sp-radio-group>
         </div>
       </div>

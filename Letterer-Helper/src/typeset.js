@@ -78,9 +78,10 @@ function toggleSettings() {
 }
 
 // apply previous settings to the UI
-const settingsList = ["setting_paste_mode"];
+const settingsList = ["setting_paste_mode", "setting_fit_overset_frames"];
 const settingsDefaults = {
-  "setting_paste_mode": "paste_rich"
+  "setting_paste_mode": "paste_rich",
+  "setting_fit_overset_frames": "always"
 };
 function setupSettings() {
   const settingsOverlay = document.querySelector(".overlay.settings .settings_body");
@@ -441,7 +442,7 @@ function changeSelection(e) {
 
   let target = e.target.closest(".table_cell");
 
-  target.classList.remove("history-selection");
+  document.querySelectorAll('.table_cell.history-selection').forEach( cell => cell.classList.remove("history-selection"));
 
   setSelection(target);
 }
@@ -643,6 +644,9 @@ function pasteText() {
     // remove html tags, then place text
     textToPlace = textToPlace.replace(/<\/?[^>]+(>|$)/g, "");
     textFrame.contents = textToPlace;
+    if (localStorage.getItem("setting_fit_overset_frames") != "only_rich_text") {
+      doFit(textFrame);
+    }
   }
 
   // go to next line
@@ -668,7 +672,8 @@ function setupButtons() {
   // Settings Overlay
   setupSettings();
 
-  document.querySelector('.settings_body #setting_paste_mode').addEventListener("change", handleSettingChange);
+  panel.querySelectorAll(".load_script").forEach(btn => btn.onclick = loadScript);
+  panel.querySelectorAll('.settings_body .setting_persist').forEach(btn => btn.addEventListener("change", handleSettingChange));
 }
 
 function handlePressNextRow(evt) {
