@@ -1,7 +1,7 @@
 {
-  "id": "Letterer-Helper",
+  "id": "8c93e3dd",
   "name": "Manga Letterer Helper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.html",
   "requiredPermissions": {
     "clipboard": "readAndWrite",
@@ -9,12 +9,10 @@
     "localFileSystem": "fullAccess",
     "allowCodeGenerationFromStrings": true
   },
-  "host": [
-    {
-      "app": "ID",
-      "minVersion": "18.5.0"
-    }
-  ],
+  "host": {
+    "app": "ID",
+    "minVersion": "18.5.0"
+  },
   "manifestVersion": 5,
   "entrypoints": [
     {
