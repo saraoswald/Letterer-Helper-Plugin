@@ -26,8 +26,6 @@
           Change the "thisIsManga" variable just below here if you'd like to always use this for non-manga projects. 
 */
 
-var thisIsManga = true; // change this to "false" (no quotation marks) if you don't need art to be placed backwards
-
 
 /* ------ Progress Bar Utility Functions ------ */
 
@@ -62,10 +60,6 @@ function destroyProgressBar() {
 }
 
 /* ------ Start of Script ------ */
-
-var doc = app.activeDocument;
-var bookSize = doc.pages.count();
-var isLtR = doc.documentPreferences.pageBinding == PageBindingOptions.LEFT_TO_RIGHT;
 
 var anchorPoints = {
     'Center': AnchorPoint.CENTER_ANCHOR,
@@ -112,9 +106,9 @@ function getAppAnchorPoint() {
     return res;
 };
 
-var targetLayer = doc.layers.itemByName('Art').isValid ?
-    doc.layers.itemByName('Art') :
-    doc.layers.add({ name: 'Art' });
+var targetLayer = app.activeDocument.layers.itemByName('Art').isValid ?
+    app.activeDocument.layers.itemByName('Art') :
+    app.activeDocument.layers.add({ name: 'Art' });
 
 function getFilter() {
     if (File.fs == "Windows") {
@@ -123,18 +117,6 @@ function getFilter() {
         return function() { return true }
     }
 }
-
-try {
-    var artFiles = File.openDialog('Select art files to place', getFilter(), true);
-    if (artFiles !== null) {
-        var artFilesToPageNums = [];
-        for (var i = 0; i < artFiles.length; i++) {
-            var file = artFiles[i];
-            artFilesToPageNums.push([file, extractPageNum(file)])
-        }
-        startDialog(artFilesToPageNums);
-    }
-} catch (err) { alert(err) }; // the debugger that will never let u down :')
 
 function startDialog(artFilesToPageNums) {
     w = new Window("dialog", "Place Art");
@@ -158,7 +140,8 @@ function startDialog(artFilesToPageNums) {
 
 
     // Starting page text input
-    var currentPage = (isLtR && !thisIsManga) || !isLtR ? app.activeWindow.activePage.name : '';
+    var isLtR = app.activeDocument.documentPreferences.pageBinding == PageBindingOptions.LEFT_TO_RIGHT;
+    var currentPage = isLtR || !isLtR ? app.activeWindow.activePage.name : '';
     var startingPageInput = radioGroup.add('edittext', undefined, currentPage);
     startingPageInput.alignment = "fill";
 
@@ -205,9 +188,8 @@ function startDialog(artFilesToPageNums) {
     // If the binding is Left to Right
     // Check to see which direction the user wants to place the images
     var placeBackwardsInput = placementOptionsGroup.add('checkbox', undefined, "Place images in the \"backwards\" manga style");
-    placeBackwardsInput.value = thisIsManga;
+    placeBackwardsInput.value = false;
     if (!isLtR) placeBackwardsInput.hide();
-
 
     // ---- Final (Button) row ----
 
@@ -225,7 +207,7 @@ function startDialog(artFilesToPageNums) {
         // make sure there are no non-number values
         // and that the given number is less than or equal to the book's last page
         return validateNum(startingPageInput) &&
-            parseInt(startingPageInput.text) <= parseInt(doc.pages.lastItem().name);
+            parseInt(startingPageInput.text) <= parseInt(app.activeDocument.pages.lastItem().name);
     }
 
     // ---- Event Handling ----
@@ -286,8 +268,10 @@ function placeArtOnPage(artLink, pageNum, options) {
     if (!hasErrors) {
         var image = new File(artLink);
         // determine INDD page number based on book binding
-        var bookPageNum = thisIsManga && isLtR ? bookSize - pageNum + 1 : pageNum; // LtR books are "backwards", where "Page 1" the last page in the document
-        var page = doc.pages.itemByName(bookPageNum.toString()); // which page in the INDD to place the art on
+        var bookSize = app.activeDocument.pages.count();
+        var isLtR = app.activeDocument.documentPreferences.pageBinding == PageBindingOptions.LEFT_TO_RIGHT;
+        var bookPageNum = isLtR ? bookSize - pageNum + 1 : pageNum; // LtR books are "backwards", where "Page 1" the last page in the document
+        var page = app.activeDocument.pages.itemByName(bookPageNum.toString()); // which page in the INDD to place the art on
 
         hasErrors = prePlaceErrorHandling(page, bookPageNum, bookSize, image, artLink);
 
@@ -312,7 +296,8 @@ function placeArtOnPageHelper(page, layer, image) {
 }
 
 function prePlaceErrorHandling(page, pageNum, image, imageLink) {
-    var debugInfo = "\n\n----Debug Info Below----\nPage number the script calculated from the link: " + pageNum.toString() + "\nNumber of pages in book: " + bookSize.toString() + "\nImage that messed up: " + imageLink;
+    // var debugInfo = "\n\n----Debug Info Below----\nPage number the script calculated from the link: " + pageNum.toString() + "\nNumber of pages in book: " + bookSize.toString() + "\nImage that messed up: " + imageLink;
+    var debugInfo = "\n\n----Debug Info Below----\nPage number the script calculated from the link: " + pageNum.toString() + "\nImage that messed up: " + imageLink;
 
     if (!page.isValid || pageNum === 0) {
         alert("Failed to match the number in the file name to one in the book.\nTry renaming your files to look like '123.TIF'." + debugInfo);
@@ -371,7 +356,7 @@ function extractPageNum(path) {
 // takes bounds input and gives output in the form [y1, x1, y2, x2]
 // adds the document setting for bleed, taking into account the gutter
 function getPageBounds(page) {
-    var prfs = doc.documentPreferences,
+    var prfs = app.activeDocument.documentPreferences,
         pb = page.bounds,
         bleedLeft = page.side == PageSideOptions.RIGHT_HAND ? 0 : prfs.documentBleedOutsideOrRightOffset,
         bleedRight = page.side == PageSideOptions.LEFT_HAND ? 0 : prfs.documentBleedOutsideOrRightOffset;
@@ -388,3 +373,21 @@ function scalePage(graphic, options) {
     var scaleMatrix = app.transformationMatrices.add({ horizontalScaleFactor: options.scaleFactor / 100, verticalScaleFactor: options.scaleFactor / 100 });
     graphic.transform(CoordinateSpaces.INNER_COORDINATES, options.anchorPoint, scaleMatrix);
 }
+
+const main = function(){
+    try {
+        var artFiles = File.openDialog('Select art files to place', getFilter(), true);
+        if (artFiles !== null) {
+            var artFilesToPageNums = [];
+            for (var i = 0; i < artFiles.length; i++) {
+                var file = artFiles[i];
+                artFilesToPageNums.push([file, extractPageNum(file)])
+            }
+            startDialog(artFilesToPageNums);
+        }
+    } catch (error) {
+        util.showDialog(error, "Error");
+    }
+}
+
+module.exports = { main }
