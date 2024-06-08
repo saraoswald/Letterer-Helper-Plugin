@@ -576,10 +576,10 @@ function doApplyTextStyles(textFrame, modifierStart, modifierEnd, characterStyle
 
   // if frame is overflowing/overset, then refit
   // overset text isn't formattable
-  if (textFrame.overflows && (localStorage.getItem("setting_fit_overset_frames") != "only_rich_text" || textFrame.contents.match(/<.+>/))) {
+  var fitOversetFramesSetting = localStorage.getItem("setting_fit_overset_frames");
+  if (textFrame.overflows && ((!fitOversetFramesSetting || fitOversetFramesSetting != "only_rich_text") || textFrame.contents.match(/<.+>/))) {
     doFit(textFrame);
   }
-
   for (i = 0; i < characters.count() - modifierEnd.length; i++) {
     start = undefined;
     testString = characters.itemByRange(i, i + modifierStart.length - 1).contents.join("").toLowerCase();
@@ -617,14 +617,23 @@ function doApplyTextStyles(textFrame, modifierStart, modifierEnd, characterStyle
             }
           }
         }
+
         characters.itemByRange(start, end).applyCharacterStyle(characterStyle);
         // assign boldital style 
         boldItalicList.forEach((pair) => {
           characters.itemByRange(...pair).applyCharacterStyle(characterStyleBoldItalic);
         });
 
+        if (textFrame.overflows) {
+          doFit(textFrame);
+        }
+        
         // remove tags
-        characters.itemByRange(end + 1, end + modifierEnd.length).remove();
+        // make sure there was an end tag first... 
+        var endTag = characters.itemByRange(end + 1, end + modifierEnd.length);
+        if (endTag.isValid) {
+          characters.itemByRange(end + 1, end + modifierEnd.length).remove();
+        }
         characters.itemByRange(i, start - 1).remove();
       }
     }
