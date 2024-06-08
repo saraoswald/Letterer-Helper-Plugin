@@ -459,30 +459,37 @@ function setSelection(cell){
   selection.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
 }
 
-function goToNextCell() {
+function goToNextCell(direction = "next") {
   const pageId = selection.getAttribute("page-id"),
     colId = selection.getAttribute("column-id"),
-    rowId = selection.getAttribute("row-id");
+    rowId = selection.getAttribute("row-id"),
+    increment = (direction == "prev") ? -1 : 1;
   
   // try going to the next row
-  let query = `.table_cell[page-id="${pageId}"][column-id="${colId}"][row-id="${parseInt(rowId) + 1}"]`,
+  let query = `.table_cell[page-id="${pageId}"][column-id="${colId}"][row-id="${parseInt(rowId) + increment}"]`,
     newSelection = document.querySelector("#typeset_tool .table_body").querySelector(query);
 
   // if empty, try the next next row
   if (!newSelection) {
-    query = `.table_cell[page-id="${pageId}"][column-id="${colId}"][row-id="${parseInt(rowId) + 2}"]`;
+    query = `.table_cell[page-id="${pageId}"][column-id="${colId}"][row-id="${parseInt(rowId) + (increment * 2)}"]`;
     newSelection = document.querySelector("#typeset_tool .table_body").querySelector(query);
   }
   
   // if empty, go to next page in the same column
   if (!newSelection) {
-    query = `.table_cell[page-id="${parseInt(pageId) + 1}"][column-id="${colId}"][row-id="0"]`;
+    query = `.table_cell[page-id="${parseInt(pageId) + increment}"][column-id="${colId}"][row-id="0"]`;
     newSelection = document.querySelector("#typeset_tool .table_body").querySelector(query);
   }
 
   // if STILL empty, try the second row in the next page
   if (!newSelection) {
-    query = `.table_cell[page-id="${parseInt(pageId) + 1}"][column-id="${colId}"][row-id="1"]`;
+    query = `.table_cell[page-id="${parseInt(pageId) + increment}"][column-id="${colId}"][row-id="1"]`;
+    newSelection = document.querySelector("#typeset_tool .table_body").querySelector(query);
+  }
+
+  // if STILL empty, try the previous column
+  if (!newSelection) {
+    query = `.table_cell[page-id="${parseInt(pageId) + increment}"][column-id="${colId - 1}"][row-id="1"]`;
     newSelection = document.querySelector("#typeset_tool .table_body").querySelector(query);
   }
     
@@ -633,9 +640,9 @@ function pasteText() {
   let textFrame = doc.selection[0];
   // textToPlace = decodeURI(textToPlace); // unescape HTML (like quotes)
 
-
   // respect the setting for paste mode
-  if (localStorage.getItem("setting_paste_mode") == "paste_rich") {
+  const pasteModeSetting = localStorage.getItem("setting_paste_mode");
+  if (pasteModeSetting == "paste_rich" || !pasteModeSetting) {
     // place text, then format + remove tags
     textFrame.contents = textToPlace;
     applyTextStyles(textFrame);
@@ -649,7 +656,7 @@ function pasteText() {
   }
 
   // go to next line
-  const newSelection = goToNextCell(selection);
+  const newSelection = goToNextCell();
   if (!newSelection) { stopPasting() } // end of file
 }
 
@@ -687,6 +694,12 @@ function handlePressNextRow(evt) {
   goToNextCell();
 }
 
+function handlePressPrevRow(evt) {
+  if (!isPasting) return; 
+
+  goToNextCell("prev");
+}
+
 function toggleControlWrapper(panel) {
   return function(evt) { 
     const controlWrapper = panel.querySelector(".control_wrapper");
@@ -700,9 +713,17 @@ function setupKeyboardShortcuts() {
     nextRowMenuItem = app.scriptMenuActions.add("Manga Helper - Go to Next Row");
   }
   
-  // nextRowMenuItem.addEventListener("afterInvoke", goToNextCell);
   nextRowMenuItem.removeEventListener("afterInvoke", handlePressNextRow);
   nextRowMenuItem.addEventListener("afterInvoke", handlePressNextRow);
+
+
+  var prevRowMenuItem = app.scriptMenuActions.item("Manga Helper - Go to Previous Row");
+  if (!prevRowMenuItem.isValid) {
+    prevRowMenuItem = app.scriptMenuActions.add("Manga Helper - Go to Previous Row");
+  }
+  
+  prevRowMenuItem.removeEventListener("afterInvoke", handlePressPrevRow);
+  prevRowMenuItem.addEventListener("afterInvoke", handlePressPrevRow);
 }
 
 module.exports = { 
