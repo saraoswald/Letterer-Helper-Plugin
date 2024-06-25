@@ -1571,7 +1571,7 @@ module.exports = function(txt, baseurl, out, ver)
                                 break;
 
                         case "tab":
-                                // o.html.push("&nbsp;&nbsp;&nbsp;&nbsp;");
+                                o.html.push("\t");
                                 break;
 
                         case "li":
