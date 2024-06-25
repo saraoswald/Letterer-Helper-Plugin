@@ -194,6 +194,8 @@ function parseRtf(script) {
 }
 
 function parseTxt(script) {
+  console.log("---- parsing -----")
+  console.log(script);
   const lines = script.split("\n");
   let parsedScript = {},
       columnsCount = 1,
@@ -405,7 +407,7 @@ function startPasting() {
     let thisSelection = null;
     if (lastSelection) {
       thisSelection = panel.querySelector('.table_body').querySelector(`.table_cell[cell-id="${lastSelection}"]`);
-      thisSelection.classList.add("history-selection");
+      if (thisSelection) thisSelection.classList.add("history-selection");
     } else if (selection) {
       thisSelection = selection;
     } else {

@@ -1112,9 +1112,9 @@ function RtfParser(text, strict, nohandle)
                                         typ = (tok >> 8) & 0x7;
                                 }
 
-                                // token MUST be control word
-                                if (6 !== typ)
-                                        throw Error("RtfParser: No control after open brace! Position: " + this.pos);
+                                // // token MUST be control word
+                                // if (6 !== typ)
+                                //         throw Error("RtfParser: No control after open brace! Position: " + this.pos);
 
                                 // create new stack frame with stuff we know about (handlers
                                 // should be careful about using ANY three-character var name)
@@ -1647,39 +1647,33 @@ module.exports = function(txt, baseurl, out, ver)
                         //         }
                         //         break;
                         
-                        // case "line":
-                        //         if (o.bullets)
-                        //         {
-                        //                 if (!o.bulletline)
-                        //                         o.bulletline = true;
-                        //         }
+                        case "line":
+                                o.html.push("\n");
+                                break;
 
-                        //         o.html.push("<BR>");
-                        //         break;
-
-                        // case "par":
-                        //         Img_("RIGHT");
-                        //         o.newpara = true;
-                        //         if (o.bullets)
-                        //         {
-                        //                 if (o.bulletline)
-                        //                 {
-                        //                         o.html.push("<BR>");
-                        //                         o.bulletline = false;
-                        //                 }
-                        //                 o.html.push("</LI>");
-                        //                 o.par_beg = "<LI>";
-                        //         }
-                        //         else if (null == o.par_end)
-                        //         {
-                        //                 o.html.push("<BR>");
-                        //         }
-                        //         else
-                        //         {
-                        //                 o.html.push(o.par_end);
-                        //                 o.par_end = null;
-                        //         }
-                        //         break;
+                        case "par":
+                                // Img_("RIGHT");
+                                o.newpara = true;
+                                // if (o.bullets)
+                                // {
+                                //         if (o.bulletline)
+                                //         {
+                                //                 o.html.push("<BR>");
+                                //                 o.bulletline = false;
+                                //         }
+                                //         o.html.push("</LI>");
+                                //         o.par_beg = "<LI>";
+                                // }
+                                if (null == o.par_end)
+                                {
+                                        o.html.push("\n");
+                                }
+                                // else
+                                // {
+                                        o.html.push(o.par_end);
+                                        o.par_end = null;
+                                // }
+                                break;
                         
                         // case "qc":
                         //         o.center = true;
@@ -1746,7 +1740,7 @@ module.exports = function(txt, baseurl, out, ver)
 
                 function EndPara_()
                 {
-                        Img_();
+                        // Img_();
                         // if (o.center)
                         // {
                         //         o.html.push("</CENTER>");
