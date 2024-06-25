@@ -194,8 +194,10 @@ function parseRtf(script) {
 }
 
 function parseTxt(script) {
-  console.log("---- parsing -----")
-  console.log(script);
+  if (debugMode) {
+    console.log("---- parsing -----")
+    console.log(script);
+  }
   const lines = script.split("\n");
   let parsedScript = {},
       columnsCount = 1,
@@ -207,6 +209,25 @@ function parseTxt(script) {
 
     // remove newlines
     line = line.replaceAll(/(\r\n|\n|\r)/gm, "");
+    
+    // remove extra closing tags
+    // thanks 4 nothing google drive
+    b_closes = (line.match(/<\/B>/g) || []).length
+    b_opens = (line.match(/<B>/g) || []).length
+    if (b_closes > b_opens) { 
+      for (var i = 0; i < b_closes - b_opens; i++) { 
+        lastIndex = line.lastIndexOf("</B>");
+        line = line.substring(0, lastIndex) + line.substring(lastIndex + 4, line.length);
+      }
+    }
+    i_closes = (line.match(/<\/I>/gi) || []).length
+    i_opens = (line.match(/<I>/gi) || []).length
+    if (i_closes > i_opens) { 
+      for (var i = 0; i < i_closes - i_opens; i++) { 
+        lastIndex = line.toUpperCase().lastIndexOf("</I>");
+        line = line.substring(0, lastIndex) + line.substring(lastIndex + 4, line.length);
+      }
+    }
 
     let lineData = line.split('\t'),
       panelNum = parseFloat(lineData[0]) || lastPanelNum,
@@ -231,7 +252,7 @@ function parseTxt(script) {
     parsedScript[pageNum] = pageData;
   })
 
-  console.log(parsedScript);
+  if (debugMode) console.log(parsedScript);
   return [parsedScript, columnsCount];
 }
 
