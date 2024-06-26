@@ -181,6 +181,8 @@ function parseScript(script, fileName) {
 }
 
 function parseRtf(script) {
+  // google adds a space after \u0000 unicode that shows up in the parsed file
+  script = script.replaceAll(/(\\u\d{4}) \}/gi, "$1}");
   // change all curly quotes to straight
   // the RTF parser doesn't handle them... TODO: fix?
   script = script.replaceAll(/\\'9[12]/gi, "'"); // replace singles

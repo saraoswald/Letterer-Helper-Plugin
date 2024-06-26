@@ -1174,7 +1174,7 @@ function RtfParser(text, strict, nohandle)
 
                                 // call current destination handlers to let them know they're
                                 // about to be popped
-                                for (var i = 0; i < this.frm._dh.length; i++)
+                                for (var i = 0; i < (this.frm._dh || []).length; i++)
                                         this.frm._dh[i](tok, this.txt, this.pos, this.frm);
 
                                 this.stk.pop();
@@ -1193,7 +1193,7 @@ function RtfParser(text, strict, nohandle)
                                 // call current destination handlers with this token
                                 if (null != this.frm)
                                 {
-                                        for (var i = 0; i < this.frm._dh.length; i++)
+                                        for (var i = 0; i < (this.frm._dh || []).length; i++)
                                                 this.frm._dh[i](tok, this.txt, this.pos, this.frm);
                                 }
                                 else
