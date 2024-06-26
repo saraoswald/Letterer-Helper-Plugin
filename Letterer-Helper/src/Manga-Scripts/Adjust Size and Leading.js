@@ -7,6 +7,7 @@
 */
 
 const doAdjust = function(isIncrease) {
+    if (app.documents.length < 1) return;
     var hasErrors = false,
         selections = app.selection;
 

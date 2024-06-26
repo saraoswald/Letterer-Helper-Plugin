@@ -5,6 +5,7 @@
 const scripts = require('./scripts');
 
 function handleClickBindingDirection(e) {
+  if (app.documents.length < 1) return;
   const newBinding = (e.target.value == "LEFT_TO_RIGHT") 
                       ? ID.PageBindingOptions.LEFT_TO_RIGHT
                       : ID.PageBindingOptions.RIGHT_TO_LEFT;

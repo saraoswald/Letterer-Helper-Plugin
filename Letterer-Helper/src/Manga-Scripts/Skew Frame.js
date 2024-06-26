@@ -4,6 +4,7 @@
 */
 
 function doSkew(skewFactor) {
+    if (app.documents.length < 1) return;
     var hasErrors = false,
         selections = app.selection;
 

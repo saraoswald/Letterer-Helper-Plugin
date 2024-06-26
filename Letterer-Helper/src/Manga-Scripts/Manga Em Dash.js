@@ -59,6 +59,7 @@ function applyMangaDash(srcObj) {
 // applies given operation to a text frame,
 // whether the cursor is inside of the text frame or not
 function tryCatch(operation) {
+    if (app.documents.length < 1) return;
     var hasErrors = false,
         selections = app.selection;
     for (var i = 0; i < selections.length; i++) {
