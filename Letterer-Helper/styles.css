@@ -262,7 +262,6 @@ section .input {
           font-size: 0.75em;
           color: var(--highlight-color-inverse);
           background-color: var(--highlight-color);
-          white-space: no-wrap;
           border-radius: 3px;
           text-overflow: ellipsis;
           overflow: hidden;
@@ -289,7 +288,6 @@ section .input {
   position: absolute;
   right: -5px;
   top: 0px;
-  cursor: col-resize;
   text-align: right;
 }
   .table_head .table_cell:last-child .icon.column_resize {
