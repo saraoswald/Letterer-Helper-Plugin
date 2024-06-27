@@ -4,6 +4,8 @@ const { app } = require("indesign");
 const ID = require("indesign");
 const fsProvider = require('uxp').storage.localFileSystem;
 const formats = require('uxp').storage.formats
+const fs = require('fs');
+
 // const { domains } = require('uxp').storage;
 
 entrypoints.setup({

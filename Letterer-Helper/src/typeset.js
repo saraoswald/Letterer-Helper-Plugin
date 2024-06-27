@@ -107,6 +107,41 @@ function handleSettingChange(e) {
   localStorage.setItem(e.target.id, e.target.value);
 }
 
+async function copyKeyboardShortcuts(e) {
+  const scriptsPanelFolder = await app.scriptPreferences.scriptsFolder;
+  const pluginFolder = await fsProvider.getPluginFolder();
+
+  try {
+    const scriptsFolderCheck = await fs.lstat(scriptsPanelFolder);
+  } catch (error) {
+    util.showDialog("Could not find the Scripts Panel folder for InDesign", "Error");
+  }
+
+  const srcFolder = path.join(pluginFolder.nativePath, "ExtendScript");
+  const destFolder = path.join(scriptsPanelFolder.nativePath, "Manga Helper");
+  
+  try {
+    const srcFolderCheck = await fs.lstat(srcFolder);
+  } catch (error) {
+    util.showDialog("Could not find the assets inside of the plugin to copy into the Scripts Panel folder.", "Error");
+  }
+
+  // create the `Manga Helper` directory in the Scripts Panel folder if it doesn't exist
+  try {
+    const destFolderCheck = await fs.lstat(destFolder);
+  } catch (error) {
+    fs.mkdir(destFolder);
+  }
+
+  // copy over files
+  const files = fs.readdirSync(srcFolder);
+  for (let i = 0; i < files.length; i++) {
+    await fs.copyFile( path.join(srcFolder, files[i]), path.join(destFolder, files[i]) );
+  }
+
+  util.showDialog("All scripts have been copied into InDesign. Open the Keyboard Shortcuts dialog in InDesign and assign shortcuts to each Script.", "Success");
+}
+
 
 // ----------------------
 //  End Settings Overlay
@@ -720,6 +755,7 @@ function setupButtons() {
 
   panel.querySelectorAll(".load_script").forEach(btn => btn.onclick = loadScript);
   panel.querySelectorAll('.settings_body .setting_persist').forEach(btn => btn.addEventListener("change", handleSettingChange));
+  panel.querySelector("#copy-keyboard-shortcuts").onclick = copyKeyboardShortcuts;
 }
 
 function handlePressNextRow(evt) {
