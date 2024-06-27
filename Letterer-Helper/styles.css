@@ -69,6 +69,13 @@ sp-action-button {
   margin: 0.5em 0;
   text-align: center;
 }
+sp-action-button.icon {
+  padding: 3px 5px;
+  margin: 0 0 0 0.5em;
+}
+sp-action-button svg {
+  margin: 0 auto;
+}
 
 .hidden { display: none; }
 
