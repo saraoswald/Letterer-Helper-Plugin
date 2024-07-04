@@ -18,7 +18,7 @@ Load plugin into the application via UXP Developer Tool (UDT)
 This repo uses Node to load dependencies. To make changes in development, run:
 ```
 npm install
-npm run build
+npm run watch
 ```
 
 This will run Webpack, updating the Javascript bundle.
