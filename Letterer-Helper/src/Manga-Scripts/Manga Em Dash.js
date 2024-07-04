@@ -42,14 +42,14 @@ function applyMangaDash(srcObj) {
     // loop through all of the paragraphs
     for (var i = 0; i < srcObj.paragraphs.length; i++) {
         // loop through all of the characters in each paragraph
-        var chars = srcObj.paragraphs[i].characters;
+        var chars = srcObj.paragraphs.item(i).characters;
         for (var j = 0; j < chars.length; j++) {
-            var ch = chars[j].contents;
+            var ch = chars.item(j).contents;
             // if the character is an em dash or en dash
-            if (ch == SpecialCharacters.EM_DASH || ch == SpecialCharacters.EN_DASH) {
+            if (["EM_DASH", "EN_DASH"].indexOf(ch.toString()) >= 0) {
                 // change it to a hyphen, and apply the 200% Width character style
-                srcObj.paragraphs[i].characters[j].contents = '-';
-                srcObj.paragraphs[i].characters[j].applyCharacterStyle(targetStyle);
+                srcObj.paragraphs.item(i).characters.item(j).contents = '-';
+                srcObj.paragraphs.item(i).characters.item(j).applyCharacterStyle(targetStyle);
             }
         }
     }
