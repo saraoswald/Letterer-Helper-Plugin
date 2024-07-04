@@ -10,7 +10,7 @@ function main() {
         selections = app.selection;
 
     for (var i = 0; i < selections.length && !hasErrors; i++) {
-        var textFrame = selections[i] instanceof InsertionPoint ?
+        var textFrame = selections[i] instanceof ID.InsertionPoint ?
             selections[i].parentTextFrames[0] :
             selections[i];
         var frameHasErrors = isError(textFrame);
@@ -25,7 +25,7 @@ function main() {
 }
 
 function isError(obj) {
-    if (!(obj instanceof TextFrame)) {
+    if (!(obj instanceof ID.TextFrame)) {
         return true;
     }
     return false;

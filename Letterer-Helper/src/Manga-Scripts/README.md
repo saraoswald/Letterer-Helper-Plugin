@@ -74,7 +74,7 @@ To help you get started, here are a couple sample scripts.
     var selections = app.selection,
         output = "";
     for(var i = 0; i < selections.length; i++){
-        if(selections[i] instanceof TextFrame && !!selections[i].contents){
+        if(selections[i] instanceof ID.TextFrame && !!selections[i].contents){
             output += selections[i].contents.replace(/[^\S ]+/g,'') + '\n';
         }
     }

@@ -34,7 +34,7 @@ function main() {
 }
 
 function isError(obj) {
-    if (!(obj instanceof TextFrame)) {
+    if (!(obj instanceof ID.TextFrame)) {
         alert('Please select some text frames and try again');
         return true;
     }
