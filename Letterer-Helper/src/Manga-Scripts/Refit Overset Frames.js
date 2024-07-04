@@ -14,6 +14,7 @@
     Nov 21 2020, Sara Linsley
 */
 
+const util = require('../utility');
 const progressBar = require('./progress_bar.js');
 
 /* ------ Start of Script ------ */
@@ -104,7 +105,7 @@ const main = function(){
     try {
         myDisplayDialog();
     } catch (error) {
-        console.log(error);
+        util.showDialog(error, "Error");
     }
 }
 

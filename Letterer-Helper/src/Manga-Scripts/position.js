@@ -214,15 +214,16 @@ const main = function(){
     try {
         var usersUnits = app.scriptPreferences.measurementUnit; // so we can revert 'em back later
         app.scriptPreferences.measurementUnit = ID.MeasurementUnits.POINTS;
-
-        if (app.activeDocument.allGraphics.length === 0) {
-            util.showDialog("Could not find any linked graphics in this document.");
-        } else if (app.documents.length != 0) {
+        if (app.documents.length == 0) {
+            util.showDialog("No documents open.", "Error");
+        } else if (app.activeDocument.allGraphics.length === 0) {
+            util.showDialog("Could not find any linked graphics in this document.", "Error");
+        } else {
             myDisplayDialog();
         }
-
         app.scriptPreferences.measurementUnit = usersUnits;
     } catch (error) {
+        util.showDialog(error, "Error");
         console.log(error);
     }
 }

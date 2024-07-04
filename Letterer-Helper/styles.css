@@ -18,12 +18,23 @@
   }
 }
 
+dialog .message, dialog .title {
+  color: var(--primary-color);
+}
+dialog .title {
+  margin-left: 0px;
+}
+
 dialog > div {
   display: flex;
   flex-direction: column;
+  min-width: 300px;
 }
 dialog > div > p {
   margin-top: 30px;
+}
+dialog footer {
+  margin-bottom: 1.5em;
 }
 
 .body {
@@ -58,15 +69,12 @@ button {
   cursor: pointer;
 }
 
-.button_group {
-  padding: 0.5em 0;
-}
 sp-button {
   margin-right: 0.5em;
 }
 sp-action-button { 
   display: block;
-  margin: 0.5em 0;
+  margin: 0 0 0.5em 0;
   text-align: center;
 }
 sp-action-button.icon {
@@ -75,6 +83,10 @@ sp-action-button.icon {
 }
 sp-action-button svg {
   margin: 0 auto;
+}
+.button_group {
+  padding: 0px;
+  margin-bottom: -1em;
 }
 
 .hidden { display: none; }
